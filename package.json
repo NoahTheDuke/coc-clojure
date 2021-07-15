@@ -1,0 +1,204 @@
+{
+	"name": "coc-clojure",
+	"version": "0.0.1",
+	"description": "coc.nvim wrapper for clojure-lsp",
+	"author": "Noah Bogart <noah.bogart@hey.com>",
+	"license": "MPL-2.0",
+	"main": "lib/index.js",
+	"keywords": [
+		"coc.nvim",
+		"clojure",
+		"clojure-lsp"
+	],
+	"engines": {
+		"coc": "^0.0.80"
+	},
+	"scripts": {
+		"lint": "eslint src --ext ts",
+		"clean": "rimraf lib",
+		"watch": "node esbuild.js --watch",
+		"build": "node esbuild.js",
+		"prepare": "node esbuild.js"
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^4.8.2",
+		"@typescript-eslint/parser": "^4.8.2",
+		"coc.nvim": "^0.0.80",
+		"esbuild": "^0.8.42",
+		"eslint": "^7.14.0",
+		"eslint-config-prettier": "^8.1.0",
+		"eslint-plugin-prettier": "^3.1.4",
+		"prettier": "^2.2.0",
+		"rimraf": "^3.0.2",
+		"typescript": "^4.3.5"
+	},
+	"activationEvents": [
+		"onLanguage:clojure"
+	],
+	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "coc-clojure configuration",
+			"properties": {
+				"clojure.enable": {
+					"type": "boolean",
+					"default": true,
+					"description": "Enable/disable coc-clojure extension"
+				},
+				"clojure.executable": {
+					"type": "string",
+					"default": "clojure-lsp",
+					"description": "Path to executable"
+				},
+				"clojure.startup-message": {
+					"type": "boolean",
+					"default": false,
+					"description": "Enable/disable coc-clojure's message on startup"
+				},
+				"clojure.trace.server": {
+					"type": "string",
+					"default": "off",
+					"enum": [
+						"off",
+						"messages",
+						"verbose"
+					],
+					"description": "Trace level between vim and clojure-lsp. Trace messages can be seen by calling CocCommand workspace.showOutput."
+				},
+				"clojure.initialization-options.auto-add-ns-to-new-files?": {
+					"type": "boolean",
+					"description": "Whether to automatically add the ns form in new blank files"
+				},
+				"clojure.initialization-options.dependency-scheme": {
+					"type": "string",
+					"description": "How the dependencies should be linked, jar will make urls compatible with java's JarURLConnection."
+				},
+				"clojure.initialization-options.document-formatting?": {
+					"type": "boolean",
+					"description": "if true or not present, document formatting is provided."
+				},
+				"clojure.initialization-options.document-range-formatting?": {
+					"type": "boolean",
+					"description": "if true or not present, document range formatting is provided."
+				},
+				"clojure.initialization-options.ignore-classpath-directories": {
+					"type": "boolean",
+					"description": "will not consider clojure files within the directories specified by your classpath. This is needed, for instance, if your build puts artifacts into resources or target that you want lsp to ignore."
+				},
+				"clojure.initialization-options.lens-segregate-test-references": {
+					"type": "boolean",
+					"description": "Segregate main references from test references with option to disable"
+				},
+				"clojure.initialization-options.lint-project-files-after-startup?": {
+					"type": "boolean",
+					"description": "Whether to async lint all project only files after startup to make features like List project errors work."
+				},
+				"clojure.initialization-options.log-path": {
+					"type": "string",
+					"description": "A absolute path to a file where clojure-lsp should log."
+				},
+				"clojure.initialization-options.semantic-tokens?": {
+					"type": "boolean",
+					"description": "Whether to enable LSP semantic tokens server support for syntax highlighting."
+				},
+				"clojure.initialization-options.show-docs-arity-on-same-line?": {
+					"type": "boolean",
+					"description": "Whether to keep the arity on the same line of the function on hover, useful for Emacs users."
+				},
+				"clojure.initialization-options.sqlite-db-path": {
+					"type": "string",
+					"description": "Where to store the project's analysis cache, used to speed up next clojure-lsp startup. A path relative to project root or an absolute path."
+				},
+				"clojure.initialization-options.text-document-sync-kind": {
+					"type": "string",
+					"description": "The sync kind during document changes, if client should send whole buffer or just related changes. Should be :full or :incremental"
+				},
+				"clojure.initialization-options.use-metadata-for-privacy?": {
+					"type": "boolean",
+					"description": "Whether to use ^:private metadata for refactorings instead of defn-"
+				}
+			}
+		},
+		"commands": [
+			{
+				"command": "lsp-clojure-add-import-to-namespace",
+				"title": "Add an import to current namespace declaration"
+			},
+			{
+				"command": "lsp-clojure-add-missing-libspec",
+				"title": "Add missing library require form"
+			},
+			{
+				"command": "lsp-clojure-clean-ns",
+				"title": "Sort and remove unused required libraries in namespace declaration"
+			},
+			{
+				"command": "lsp-clojure-cycle-coll",
+				"title": "Cycle the kind of collection: list -> map -> vector -> set -> list"
+			},
+			{
+				"command": "lsp-clojure-cycle-privacy",
+				"title": "Cycle the privacy of current function definition"
+			},
+			{
+				"command": "lsp-clojure-expand-let",
+				"title": "Move current let expression up a level"
+			},
+			{
+				"command": "lsp-clojure-extract-function",
+				"title": "Move current expression into new top-level function"
+			},
+			{
+				"command": "lsp-clojure-inline-symbol",
+				"title": "Replace all instances of symbol with symbol definition"
+			},
+			{
+				"command": "lsp-clojure-introduce-let",
+				"title": "Move current expression to let-bound variable"
+			},
+			{
+				"command": "lsp-clojure-move-to-let",
+				"title": "Move current expression into surrounding let block"
+			},
+			{
+				"command": "lsp-clojure-thread-first",
+				"title": "Replace current expression with thread-first expession"
+			},
+			{
+				"command": "lsp-clojure-thread-first-all",
+				"title": "Replace current nested expression with thread-first expression"
+			},
+			{
+				"command": "lsp-clojure-thread-last",
+				"title": "Replace current expression with thread-last expession"
+			},
+			{
+				"command": "lsp-clojure-thread-last-all",
+				"title": "Replace current nested expression with thread-last expression"
+			},
+			{
+				"command": "lsp-clojure-unwind-all",
+				"title": "Replace expression with nested expression"
+			},
+			{
+				"command": "lsp-clojure-unwind-thread",
+				"title": "Replace threaded expression with nested expression"
+			},
+			{
+				"command": "lsp-clojure-cursor-info",
+				"title": "Show debugging information for the symbol at cursor"
+			},
+			{
+				"command": "lsp-clojure-server-info",
+				"title": "Show server configuration information"
+			},
+			{
+				"command": "lsp-clojure-server-info-raw",
+				"title": "Retrieve from server the server configuration information"
+			}
+		]
+	},
+	"dependencies": {
+		"lodash": "^4.17.21"
+	}
+}
