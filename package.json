@@ -50,6 +50,10 @@
 					"default": "clojure-lsp",
 					"description": "Path to executable"
 				},
+				"clojure.executableArgs": {
+					"type": "array",
+					"description": "Executable args"
+				},
 				"clojure.startup-message": {
 					"type": "boolean",
 					"default": false,
@@ -133,6 +137,10 @@
 				"title": "Sort and remove unused required libraries in namespace declaration"
 			},
 			{
+				"command": "lsp-clojure-change-coll",
+				"title": "Choose new type of collection"
+			},
+			{
 				"command": "lsp-clojure-cycle-coll",
 				"title": "Cycle the kind of collection: list -> map -> vector -> set -> list"
 			},
@@ -191,10 +199,6 @@
 			{
 				"command": "lsp-clojure-server-info",
 				"title": "Show server configuration information"
-			},
-			{
-				"command": "lsp-clojure-server-info-raw",
-				"title": "Retrieve from server the server configuration information"
 			}
 		]
 	},

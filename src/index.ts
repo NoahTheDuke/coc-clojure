@@ -2,10 +2,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-import { ExtensionContext, services, StatusBarItem, window, workspace } from "coc.nvim";
+import { ExtensionContext, services, StatusBarItem, window } from "coc.nvim";
 import { createClient } from "./client";
 import { createCommands } from "./commands";
-import {getConfig} from "./config";
+import { getConfig } from "./config";
 
 export async function activate(context: ExtensionContext): Promise<void> {
 	const config = getConfig();
@@ -30,4 +30,3 @@ export async function activate(context: ExtensionContext): Promise<void> {
 		window.showMessage("clojure-lsp loaded!");
 	}
 }
-

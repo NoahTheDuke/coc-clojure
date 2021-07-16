@@ -7,6 +7,7 @@ import { workspace } from "coc.nvim";
 export interface Config {
 	enable: boolean;
 	executable: string;
+	executableArgs: string[] | undefined;
 	startupMessage: boolean;
 	initializationOptions: Record<string, unknown>;
 }
@@ -16,6 +17,7 @@ export function getConfig(): Config {
 	return {
 		enable: config.get("enable", true),
 		executable: config.get("executable", "clojure-lsp"),
+		executableArgs: config.get("executableArgs"),
 		startupMessage: config.get("startup-message", false),
 		initializationOptions: config.get("initialization-options"),
 	};

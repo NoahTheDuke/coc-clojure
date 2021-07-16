@@ -6,19 +6,18 @@ import { LanguageClient, LanguageClientOptions, ServerOptions } from "coc.nvim";
 import { Config } from "./config";
 
 export function createClient(config: Config): LanguageClient {
-	const executablePath = config.executable;
+	const executable = {
+		command: config.executable,
+		args: config.executableArgs,
+	};
 
 	const serverOptions: ServerOptions = {
-		run: { command: executablePath },
-		debug: { command: executablePath },
-	};
-	const initializationOptions = {
-		"use-metadata-for-privacy?": true,
-		"ignore-classpath-directories": true,
+		run: executable,
+		debug: executable,
 	};
 	const clientOptions: LanguageClientOptions = {
 		documentSelector: ["clojure"],
-		initializationOptions: Object.assign(initializationOptions, config.initializationOptions),
+		initializationOptions: config.initializationOptions,
 	};
 	return new LanguageClient("clojure", "Clojure Language Client", serverOptions, clientOptions);
 }
