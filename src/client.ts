@@ -3,7 +3,7 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import { LanguageClient, LanguageClientOptions, ServerOptions } from "coc.nvim";
-import { Config } from "./config";
+import { Config, documentSelector } from "./config";
 
 export function createClient(config: Config): LanguageClient {
 	const executable = {
@@ -16,7 +16,7 @@ export function createClient(config: Config): LanguageClient {
 		debug: executable,
 	};
 	const clientOptions: LanguageClientOptions = {
-		documentSelector: ["clojure"],
+		documentSelector,
 		initializationOptions: config.initializationOptions,
 	};
 	return new LanguageClient("clojure", "Clojure Language Client", serverOptions, clientOptions);

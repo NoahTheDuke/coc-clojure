@@ -61,12 +61,8 @@
 				},
 				"clojure.trace.server": {
 					"type": "string",
-					"default": "off",
-					"enum": [
-						"off",
-						"messages",
-						"verbose"
-					],
+					"default": "verbose",
+					"enum": ["off", "messages", "verbose"],
 					"description": "Trace level between vim and clojure-lsp. Trace messages can be seen by calling CocCommand workspace.showOutput."
 				},
 				"clojure.initialization-options.auto-add-ns-to-new-files?": {

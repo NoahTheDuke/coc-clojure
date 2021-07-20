@@ -4,12 +4,22 @@
 
 import { workspace } from "coc.nvim";
 
+// from calva:
+// include the 'file' and 'untitled' to the
+// document selector. All other schemes are
+// not known and therefore not supported.
+export const documentSelector = [
+	{ scheme: "file", language: "clojure" },
+	{ scheme: "jar", language: "clojure" },
+	{ scheme: "untitled", language: "clojure" },
+];
+
 export interface Config {
 	enable: boolean;
 	executable: string;
 	executableArgs: string[] | undefined;
-	startupMessage: boolean;
 	initializationOptions: Record<string, unknown>;
+	startupMessage: boolean;
 }
 
 export function getConfig(): Config {
@@ -18,7 +28,7 @@ export function getConfig(): Config {
 		enable: config.get("enable", true),
 		executable: config.get("executable", "clojure-lsp"),
 		executableArgs: config.get("executableArgs"),
-		startupMessage: config.get("startup-message", false),
 		initializationOptions: config.get("initialization-options"),
+		startupMessage: config.get("startup-message", false),
 	};
 }

@@ -2,14 +2,18 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-import { ExtensionContext, services, StatusBarItem, window } from "coc.nvim";
+import { ExtensionContext, Logger, services, StatusBarItem, window } from "coc.nvim";
 import { createClient } from "./client";
 import { createCommands } from "./commands";
 import { getConfig } from "./config";
 
+export let logger: Logger;
+
 export async function activate(context: ExtensionContext): Promise<void> {
 	const config = getConfig();
 	if (!config.enable) return;
+
+	logger = context.logger;
 
 	let statusItem: StatusBarItem;
 	if (config.startupMessage) {
