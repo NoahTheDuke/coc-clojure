@@ -65,12 +65,20 @@
 					"enum": ["off", "messages", "verbose"],
 					"description": "Trace level between vim and clojure-lsp. Trace messages can be seen by calling CocCommand workspace.showOutput."
 				},
+				"clojure.initialization-options.additional-snippets": {
+					"type": "array",
+					"description": "Additional user snippets to be available during completing."
+				},
 				"clojure.initialization-options.auto-add-ns-to-new-files?": {
 					"type": "boolean",
-					"description": "Whether to automatically add the ns form in new blank files"
+					"description": "Whether to automatically add the ns form in new blank files."
+				},
+				"clojure.initialization-options.cljfmt": {
+					"type": "object",
+					"description": "Used for formatting, json encoded configuration for cljfmt."
 				},
 				"clojure.initialization-options.dependency-scheme": {
-					"type": "string",
+					"enum": ["zip", "jar"],
 					"description": "How the dependencies should be linked, jar will make urls compatible with java's JarURLConnection."
 				},
 				"clojure.initialization-options.document-formatting?": {
@@ -89,6 +97,10 @@
 					"type": "boolean",
 					"description": "Segregate main references from test references with option to disable"
 				},
+				"clojure.initialization-options.linters": {
+					"type": "string",
+					"description": "clojure-lsp custom linters"
+				},
 				"clojure.initialization-options.lint-project-files-after-startup?": {
 					"type": "boolean",
 					"description": "Whether to async lint all project only files after startup to make features like List project errors work."
@@ -105,13 +117,21 @@
 					"type": "boolean",
 					"description": "Whether to keep the arity on the same line of the function on hover, useful for Emacs users."
 				},
+				"clojure.initialization-options.source-aliases": {
+					"type": "string",
+					"description": "Used for deps.edn projects, the aliases which clojure-lsp should get the source-paths besides the root level :paths and :extra-paths."
+				},
+				"clojure.initialization-options.source-paths": {
+					"type": "string",
+					"description": "project-local directories to look for clj/cljc/cljs files, if using deps.edn, use :source-aliases instead."
+				},
 				"clojure.initialization-options.sqlite-db-path": {
 					"type": "string",
 					"description": "Where to store the project's analysis cache, used to speed up next clojure-lsp startup. A path relative to project root or an absolute path."
 				},
 				"clojure.initialization-options.text-document-sync-kind": {
-					"type": "string",
-					"description": "The sync kind during document changes, if client should send whole buffer or just related changes. Should be :full or :incremental"
+					"enum": [":incremental", ":full"],
+					"description": "The sync kind during document changes, if client should send whole buffer or just related changes."
 				},
 				"clojure.initialization-options.use-metadata-for-privacy?": {
 					"type": "boolean",
