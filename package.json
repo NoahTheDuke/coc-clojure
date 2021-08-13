@@ -118,7 +118,7 @@
 					"description": "Whether to keep the arity on the same line of the function on hover, useful for Emacs users."
 				},
 				"clojure.initialization-options.source-aliases": {
-					"type": "string",
+					"type": "array",
 					"description": "Used for deps.edn projects, the aliases which clojure-lsp should get the source-paths besides the root level :paths and :extra-paths."
 				},
 				"clojure.initialization-options.source-paths": {
