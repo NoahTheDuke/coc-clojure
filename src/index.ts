@@ -2,35 +2,41 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-import { ExtensionContext, Logger, services, StatusBarItem, window } from "coc.nvim";
+import { ExtensionContext, services, StatusBarItem, window } from "coc.nvim";
 import { createClient } from "./client";
-import { createCommands } from "./commands";
+import { registerCommands } from "./commands";
 import { getConfig } from "./config";
-
-export let logger: Logger;
+import { logger, setLogger } from "./logger";
 
 export async function activate(context: ExtensionContext): Promise<void> {
 	const config = getConfig();
 	if (!config.enable) return;
 
-	logger = context.logger;
+	setLogger(context);
 
 	let statusItem: StatusBarItem;
 	if (config.startupMessage) {
+		logger.info("Showing statusItem");
 		statusItem = window.createStatusBarItem(undefined, { progress: true });
 		statusItem.text = `Loading clojure-lsp`;
 		statusItem.show();
 	}
 
+	logger.info("Creating client", config);
 	const client = createClient(config);
 
 	context.subscriptions.push(services.registLanguageClient(client));
+	registerCommands(context, client);
 
-	createCommands(context, client);
+	await client.onReady();
 
 	if (config.startupMessage) {
-		await client.onReady();
+		logger.info("Disposing statusItem");
 		statusItem?.dispose();
 		window.showMessage("clojure-lsp loaded!");
 	}
+
+	// client.onNotification("clojure/textDocument/testTree", (tree: any) => {
+	// 	window.showInformationMessage(JSON.stringify(tree, null, 4));
+	// });
 }

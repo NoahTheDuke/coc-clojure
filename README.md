@@ -1,8 +1,9 @@
 # coc-clojure
 
-coc.nvim wrapper for clojure-lsp. Heavily inspired by and some code borrowed from
+coc.nvim wrapper for [clojure-lsp]. Heavily inspired by and some code borrowed from
 [Calva].
 
+[clojure-lsp]: https://clojure-lsp.io/
 [Calva]: https://github.com/BetterThanTomorrow/calva
 
 ## Install
@@ -14,7 +15,7 @@ coc.nvim wrapper for clojure-lsp. Heavily inspired by and some code borrowed fro
 Every refactoring command listed on the [refactoring] page is available. They
 are provided with the `lsp-clojure-` prefix:
 
-[refactoring]: https://clojure-lsp.github.io/clojure-lsp/capabilities/#refactorings
+[refactoring]: https://clojure-lsp.io/clojure-lsp/capabilities/#refactorings
 
 * lsp-clojure-add-import-to-namespace
 * lsp-clojure-add-missing-libspec

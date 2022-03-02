@@ -1,6 +1,6 @@
 {
 	"name": "coc-clojure",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"description": "coc.nvim wrapper for clojure-lsp",
 	"author": "Noah Bogart <noah.bogart@hey.com>",
 	"license": "MPL-2.0",
@@ -62,24 +62,152 @@
 				"clojure.trace.server": {
 					"type": "string",
 					"default": "verbose",
-					"enum": ["off", "messages", "verbose"],
+					"enum": [
+						"off",
+						"messages",
+						"verbose"
+					],
 					"description": "Trace level between vim and clojure-lsp. Trace messages can be seen by calling CocCommand workspace.showOutput."
+				},
+				"clojure.initialization-options.source-paths": {
+					"type": "string",
+					"description": "project-local directories to look for clj/cljc/cljs files, if using deps.edn, use :source-aliases instead."
+				},
+				"clojure.initialization-options.source-aliases": {
+					"type": "array",
+					"description": "Used for deps.edn projects, the aliases which clojure-lsp should get the source-paths besides the root level :paths and :extra-paths."
+				},
+				"clojure.initialization-options.use-source-paths-from-classpath": {
+					"type": "boolean",
+					"description": "Whether to check source-paths from classpath or manually discover."
+				},
+				"clojure.initialization-options.linters": {
+					"type": "object",
+					"description": "clojure-lsp custom linters",
+					"properties": {
+						"clj-kondo": {
+							"type": "object",
+							"description": "clj-kondo specific settings",
+							"properties": {
+								"level": {
+									"description": "",
+									"enum": [
+										"off",
+										"on"
+									]
+								},
+								"report-duplicates": {
+									"type": "boolean",
+									"description": "Shows all linters of the same symbol instead of showing only the first spot."
+								},
+								"ns-exclude-regex": {
+									"type": "string",
+									"description": "Exclude the diagnostics/findings for namespaces that match this regex."
+								},
+								"async-custom-lint?": {
+									"type": "boolean",
+									"description": "Async lint lsp-specific linters? Improves UI feedback for huge clojure buffers."
+								}
+							}
+						}
+					}
 				},
 				"clojure.initialization-options.additional-snippets": {
 					"type": "array",
 					"description": "Additional user snippets to be available during completing."
 				},
+				"clojure.initialization-options.ignore-classpath-directories": {
+					"type": "boolean",
+					"description": "will not consider clojure files within the directories specified by your classpath. This is needed, for instance, if your build puts artifacts into resources or target that you want lsp to ignore."
+				},
+				"clojure.initialization-options.lint-project-files-after-startup?": {
+					"type": "boolean",
+					"description": "Whether to async lint all project only files after startup to make features like List project errors work."
+				},
+				"clojure.initialization-options.notify-references-on-file-change": {
+					"type": "boolean",
+					"description": "Whether to update diagnostics of the changed references when editing files, avoiding outdated diagnostics in other files."
+				},
+				"clojure.initialization-options.use-metadata-for-privacy?": {
+					"type": "boolean",
+					"description": "Whether to use ^:private metadata for refactorings instead of defn-"
+				},
+				"clojure.initialization-options.clean": {
+					"type": "object",
+					"description": "Settings related to clean-ns refactoring.",
+					"properties": {
+						"ns-inner-blocks-indentation": {
+							"type": "string",
+							"description": "Where to place first require/import.",
+							"enum": [
+								"same-line",
+								"next-line",
+								"keep"
+							]
+						},
+						"sort": {
+							"type": "object",
+							"description": "How to sort various forms.",
+							"properties": {
+								"ns": {
+									"type": "boolean",
+									"description": "Whether to enable sort of ns children like require/import forms"
+								},
+								"require": {
+									"description": "Whether to enable sort of :require form. true to sort according to the Clojure Style Guide, :lexicographically to do a lexicographic sort that places unwrapped namespaces last.",
+									"enum": [
+										true,
+										false,
+										"lexicographically"
+									]
+								},
+								"import": {
+									"type": "boolean",
+									"description": "Whether to enable sort of :import form."
+								},
+								"refer": {
+									"type": "object",
+									"description": "Whether to enable sort of :refer form.",
+									"properties": {
+										"max-line-length": {
+											"type": "number",
+											"description": "the max refers to keep at same line before breaking the line."
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"clojure.initialization-options.semantic-tokens?": {
+					"type": "boolean",
+					"description": "Whether to enable LSP semantic tokens server support for syntax highlighting."
+				},
+				"clojure.initialization-options.hover": {
+					"type": "object",
+					"description": "Options related to hovering",
+					"properties": {
+						"arity-on-same-line?": {
+							"type": "boolean",
+							"description": "Whether to keep the arity on the same line of the function on hover, useful for Emacs users."
+						},
+						"hide-file-location?": {
+							"type": "boolean",
+							"description": "Whether to show the full filename and path on hover."
+						},
+						"clojuredocs": {
+							"type": "boolean",
+							"description": "Whether to get clojuredocs information on hover, the clojuredocs content is cached."
+						}
+					}
+				},
 				"clojure.initialization-options.auto-add-ns-to-new-files?": {
 					"type": "boolean",
 					"description": "Whether to automatically add the ns form in new blank files."
 				},
-				"clojure.initialization-options.cljfmt": {
-					"type": "object",
-					"description": "Used for formatting, json encoded configuration for cljfmt."
-				},
-				"clojure.initialization-options.dependency-scheme": {
-					"enum": ["zip", "jar"],
-					"description": "How the dependencies should be linked, jar will make urls compatible with java's JarURLConnection."
+				"clojure.initialization-options.keep-parens-when-threading?": {
+					"type": "boolean",
+					"description": "Whether to keep parenthesis when threading single arity functions."
 				},
 				"clojure.initialization-options.document-formatting?": {
 					"type": "boolean",
@@ -89,53 +217,128 @@
 					"type": "boolean",
 					"description": "if true or not present, document range formatting is provided."
 				},
-				"clojure.initialization-options.ignore-classpath-directories": {
-					"type": "boolean",
-					"description": "will not consider clojure files within the directories specified by your classpath. This is needed, for instance, if your build puts artifacts into resources or target that you want lsp to ignore."
+				"clojure.initialization-options.text-document-sync-kind": {
+					"enum": [
+						":incremental",
+						":full"
+					],
+					"description": "The sync kind during document changes, if client should send whole buffer or just related changes."
 				},
-				"clojure.initialization-options.lens-segregate-test-references": {
-					"type": "boolean",
-					"description": "Segregate main references from test references with option to disable"
+				"clojure.initialization-options.dependency-scheme": {
+					"enum": [
+						"zip",
+						"jar"
+					],
+					"description": "How the dependencies should be linked, jar will make urls compatible with java's JarURLConnection."
 				},
-				"clojure.initialization-options.linters": {
+				"cljfmt-config-path": {
+					"type": "object",
+					"description": "Where to find cljfmt configuration for formatting. A path relative to project root or an absolute path. Use #re for regex inside the cljfmt configuration file."
+				},
+				"clojure.initialization-options.cljfmt": {
+					"type": "object",
+					"description": "Used for formatting, json encoded configuration for cljfmt."
+				},
+				"clojure.initialization-options.project-specs": {
+					"type": "array",
+					"description": "For defining how clojure-lsp should find your project classpath. The project-path should be a file and the classpath-cmd the command to run to get the classpath.",
+					"items": {
+						"type": "object",
+						"description": "Project spec",
+						"properties": {
+							"project-path": {
+								"type": "string",
+								"description": "The file root file (project.clj, deps.edn, etc)."
+							},
+							"classpath-cmd": {
+								"type": "array",
+								"description": "The command to run to generate the project's classpath",
+								"items": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"clojure.initialization-options.code-lens": {
+					"type": "object",
+					"description": "Segregate main references from test references with option to disable.",
+					"properties": {
+						"segregate-test-references": {
+							"type": "boolean"
+						}
+					}
+				},
+				"clojure.initialization-options.stubs": {
+					"type": "object",
+					"description": "Stub generation related settings.",
+					"properties": {
+						"generation": {
+							"type": "object",
+							"description": "Auto stubs generation",
+							"properties": {
+								"namespaces": {
+									"type": "array",
+									"description": "The namespaces to generate and analyze stubs, empty by default disabling stub generation.",
+									"items": {
+										"type": "string"
+									}
+								},
+								"output-dir": {
+									"type": "string",
+									"description": "The output where to generate the stubs, by default .lsp/.cache/stubs"
+								},
+								"java-command": {
+									"type": "string",
+									"description": "the path to java command to spawn the stub process, default use java from $PATH."
+								}
+							}
+						},
+						"extra-dirs": {
+							"type": "array",
+							"description": "dirs to analyze to consider as part of manual generated stubs.",
+							"items": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"clojure.initialization-options.classpath-config-paths": {
+					"type": "array",
+					"description": "List of extra configurations to load from classpath.",
+					"items": {
+						"type": "string"
+					}
+				},
+				"clojure.initialization-options.copy-kond-configs?": {
+					"type": "boolean",
+					"description": "Whether to copy clj-kondo hooks configs exported by libs on classpath during startup lint."
+				},
+				"clojure.initialization-options.cache-path": {
 					"type": "string",
-					"description": "clojure-lsp custom linters"
-				},
-				"clojure.initialization-options.lint-project-files-after-startup?": {
-					"type": "boolean",
-					"description": "Whether to async lint all project only files after startup to make features like List project errors work."
+					"description": "Where to store the project's analysis cache, used to speed up next clojure-lsp startup. A path relative to project root or an absolute path."
 				},
 				"clojure.initialization-options.log-path": {
 					"type": "string",
 					"description": "A absolute path to a file where clojure-lsp should log."
 				},
-				"clojure.initialization-options.semantic-tokens?": {
-					"type": "boolean",
-					"description": "Whether to enable LSP semantic tokens server support for syntax highlighting."
+				"clojure.initialization-options.api": {
+					"type": "object",
+					"description": "API-specific settings",
+					"properties": {
+						"exit-on-errors?": {
+							"type": "boolean",
+							"description": "Whether to exit the clojure-lsp process during api/cli call if any error is found, like classpath scan failure."
+						}
+					}
 				},
 				"clojure.initialization-options.show-docs-arity-on-same-line?": {
 					"type": "boolean",
-					"description": "Whether to keep the arity on the same line of the function on hover, useful for Emacs users."
+					"description": "DEPRECATED. Use clojure.initialization-options.hover.arity-on-same-line?"
 				},
-				"clojure.initialization-options.source-aliases": {
-					"type": "array",
-					"description": "Used for deps.edn projects, the aliases which clojure-lsp should get the source-paths besides the root level :paths and :extra-paths."
-				},
-				"clojure.initialization-options.source-paths": {
-					"type": "string",
-					"description": "project-local directories to look for clj/cljc/cljs files, if using deps.edn, use :source-aliases instead."
-				},
-				"clojure.initialization-options.sqlite-db-path": {
-					"type": "string",
-					"description": "Where to store the project's analysis cache, used to speed up next clojure-lsp startup. A path relative to project root or an absolute path."
-				},
-				"clojure.initialization-options.text-document-sync-kind": {
-					"enum": [":incremental", ":full"],
-					"description": "The sync kind during document changes, if client should send whole buffer or just related changes."
-				},
-				"clojure.initialization-options.use-metadata-for-privacy?": {
+				"clojure.initialization-options.lens-segregate-test-references": {
 					"type": "boolean",
-					"description": "Whether to use ^:private metadata for refactorings instead of defn-"
+					"description": "DEPRECATED. Use clojure.initialization-options.code-lens.segregate-test-references"
 				}
 			}
 		},
@@ -149,12 +352,24 @@
 				"title": "Add missing library require form"
 			},
 			{
-				"command": "lsp-clojure-clean-ns",
-				"title": "Sort and remove unused required libraries in namespace declaration"
+				"command": "lsp-clojure-add-require-suggestion",
+				"title": "Add suggested require to ns form"
 			},
 			{
 				"command": "lsp-clojure-change-coll",
 				"title": "Choose new type of collection"
+			},
+			{
+				"command": "lsp-clojure-clean-ns",
+				"title": "Sort and remove unused required libraries in namespace declaration"
+			},
+			{
+				"command": "lsp-clojure-create-function",
+				"title": "Create a function from the current expression"
+			},
+			{
+				"command": "lsp-clojure-create-test",
+				"title": "Creates a test somewhere, who knows"
 			},
 			{
 				"command": "lsp-clojure-cycle-coll",
@@ -181,8 +396,28 @@
 				"title": "Move current expression to let-bound variable"
 			},
 			{
+				"command": "lsp-clojure-move-coll-entry-down",
+				"title": "Move the current element (or pair) down within the collection"
+			},
+			{
+				"command": "lsp-clojure-move-coll-entry-up",
+				"title": "Move the current element (or pair) up within the collection"
+			},
+			{
 				"command": "lsp-clojure-move-to-let",
 				"title": "Move current expression into surrounding let block"
+			},
+			{
+				"command": "lsp-clojure-resolve-macro-as",
+				"title": "Add entry to .clj-kondo/config.edn to resolve macro as another macro"
+			},
+			{
+				"command": "lsp-clojure-sort-map",
+				"title": "Sort entries within current map"
+			},
+			{
+				"command": "lsp-clojure-suppress-diagnostic",
+				"title": "Add a :clj-kondo/ignore to suppress linting current line"
 			},
 			{
 				"command": "lsp-clojure-thread-first",
@@ -209,12 +444,20 @@
 				"title": "Replace threaded expression with nested expression"
 			},
 			{
+				"command": "lsp-clojure-docs",
+				"title": "Read the docs for a given symbol"
+			},
+			{
 				"command": "lsp-clojure-cursor-info",
 				"title": "Show debugging information for the symbol at cursor"
 			},
 			{
 				"command": "lsp-clojure-server-info",
 				"title": "Show server configuration information"
+			},
+			{
+				"command": "lsp-clojure-server-info-raw",
+				"title": "Show raw server configuration information"
 			}
 		]
 	},
