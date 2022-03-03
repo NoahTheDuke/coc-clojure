@@ -45,7 +45,7 @@ async function fetchDocs(client: LanguageClient) {
 			});
 		if (result) {
 			await window.showDialog({
-				title: `${result.ns}/${result.title}`,
+				title: `${result.ns}/${result.name}`,
 				content: result.doc,
 			});
 		}
