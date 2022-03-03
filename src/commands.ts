@@ -26,14 +26,14 @@ async function getUriAndPosition(): Promise<CommandParams> {
 	return [document.uri, line, character];
 }
 
-async function getInput(title: string): Promise<string> {
-	const result = (await window.requestInput(title, "")).trim();
+async function getInput(title: string, defaultTitle = ""): Promise<string> {
+	const result = (await window.requestInput(title, defaultTitle)).trim();
 	return result;
 }
 
 async function fetchDocs(client: LanguageClient) {
 	const symName = await getInput("Var name?");
-	const symNs = await getInput("Namespace?");
+	const symNs = await getInput("Namespace?", "clojure.core");
 	if (symName && symNs) {
 		const result = await client
 			.sendRequest<Record<string, string>>("clojure/clojuredocs/raw", {
