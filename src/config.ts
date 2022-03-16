@@ -7,6 +7,7 @@ import { workspace } from "coc.nvim";
 export const documentSelector = [
 	{ scheme: "file", language: "clojure" },
 	{ scheme: "jar", language: "clojure" },
+	{ scheme: "zipfile", language: "clojure" },
 ];
 
 export interface Config {
