@@ -18,6 +18,7 @@ interface Command {
 	title?: string;
 	choices?: string[];
 	fn?: (client: LanguageClient) => Promise<any>;
+	aliases?: string[];
 }
 
 async function getUriAndPosition(): Promise<CommandParams> {
@@ -53,32 +54,41 @@ async function fetchDocs(client: LanguageClient) {
 }
 
 const clojureCommands: Command[] = [
+	// As defined here: https://clojure-lsp.io/features/#clojure-lsp-extra-commands
 	{ command: "add-import-to-namespace", title: "Import name?" },
 	{ command: "add-missing-import" },
 	{ command: "add-missing-libspec" },
 	{ command: "add-require-suggestion" },
-	{ command: "change-coll", title: "New coll type", choices: ["list", "vector", "map", "set"] },
 	{ command: "clean-ns" },
 	{ command: "create-function" },
 	{ command: "create-test" },
 	{ command: "cycle-coll" },
 	{ command: "cycle-privacy" },
-	{ command: "expand-let" },
+	{ command: "demote-fn" },
+	{ command: "drag-backward", aliases: ["move-coll-entry-down"] },
+	{ command: "drag-forward", aliases: ["move-coll-entry-up"] },
 	{ command: "extract-function", title: "Function name?" },
-	{ command: "inline-symbol" },
+	{ command: "expand-let" },
+	{ command: "create-function" },
 	{ command: "introduce-let", title: "Bind to?" },
-	{ command: "move-coll-entry-down" },
-	{ command: "move-coll-entry-up" },
+	{ command: "inline-symbol" },
+	{ command: "move-form", title: "Which file?" },
 	{ command: "move-to-let", title: "Bind to?" },
-	{ command: "resolve-macro-as", title: "Function name?" },
+	{ command: "promote-fn" },
+	{
+		command: "change-coll",
+		title: "New coll type",
+		choices: ["list", "vector", "map", "set"],
+		aliases: ["change-collection"],
+	},
 	{ command: "sort-map" },
-	{ command: "suppress-diagnostic", title: "Lint to ignore?" },
 	{ command: "thread-first" },
 	{ command: "thread-first-all" },
 	{ command: "thread-last" },
 	{ command: "thread-last-all" },
 	{ command: "unwind-all" },
 	{ command: "unwind-thread" },
+	{ command: "suppress-diagnostic", title: "Lint to ignore?" },
 	{
 		command: "docs",
 		fn: fetchDocs,
@@ -152,18 +162,24 @@ async function executePositionCommand(
 }
 
 async function titleWithChoices(title: string, choices: string[]): Promise<string> {
-	const result = await window.showMenuPicker(choices, title);
+	const result = await window.showMenuPicker(choices, { title });
 	if (result === -1) return;
 	return choices[result];
 }
 
-async function executeChoicesCommand(client: LanguageClient, cmd: Command): Promise<any> {
+async function executeChoicesCommand(
+	client: LanguageClient,
+	cmd: Command
+): Promise<any> {
 	const { title, choices } = cmd;
 	const extraParam = await titleWithChoices(title, choices);
 	return executePositionCommand(client, cmd, [extraParam]);
 }
 
-async function executePromptCommand(client: LanguageClient, cmd: Command): Promise<any> {
+async function executePromptCommand(
+	client: LanguageClient,
+	cmd: Command
+): Promise<any> {
 	const { title } = cmd;
 	const extraParam = await getInput(title);
 	if (extraParam) {
@@ -171,11 +187,10 @@ async function executePromptCommand(client: LanguageClient, cmd: Command): Promi
 	}
 }
 
-function registerCommand(client: LanguageClient, cmd: Command): Disposable {
-	const { command, fn, title, choices } = cmd;
+function registerCommand(client: LanguageClient, cmd: Command): Disposable[] {
+	const { command, fn, title, choices, aliases } = cmd;
 	const id = `lsp-clojure-${command}`;
-
-	return commands.registerCommand(id, async () => {
+	const func = async () => {
 		if (choices && !workspace.env.dialog) {
 			return;
 		} else if (fn) {
@@ -188,9 +203,22 @@ function registerCommand(client: LanguageClient, cmd: Command): Disposable {
 		} else {
 			await executePositionCommand(client, cmd);
 		}
-	});
+	};
+	const newCommands = [commands.registerCommand(id, func)];
+	if (aliases) {
+		aliases.forEach((alias) => {
+			const aliasId = `lsp-clojure-${alias}`;
+			newCommands.push(commands.registerCommand(aliasId, func));
+		});
+	}
+	return newCommands;
 }
 
-export function registerCommands(context: ExtensionContext, client: LanguageClient): void {
-	context.subscriptions.push(...clojureCommands.map((cmd) => registerCommand(client, cmd)));
+export function registerCommands(
+	context: ExtensionContext,
+	client: LanguageClient
+): void {
+	context.subscriptions.push(
+		...clojureCommands.flatMap((cmd) => registerCommand(client, cmd))
+	);
 }
