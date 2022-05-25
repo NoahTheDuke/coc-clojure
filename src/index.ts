@@ -5,16 +5,16 @@
 import { ExtensionContext, languages, services, StatusBarItem, window } from "coc.nvim";
 import { createClient } from "./client";
 import { registerCommands } from "./commands";
-import { documentSelector, getConfig } from "./config";
+import { config, documentSelector, setConfig as loadConfig } from "./config";
 import { logger, setLogger } from "./logger";
 import { ClojureSignatureHelpProvider } from "./signature";
 
 export async function activate(context: ExtensionContext): Promise<void> {
-	context.logger.warn("inside coc-clojure");
-	const config = getConfig();
-	if (!config.enable) return;
-
 	setLogger(context);
+
+	logger.warn("inside coc-clojure");
+	loadConfig();
+	if (!config.enable) return;
 
 	let statusItem: StatusBarItem;
 	if (config.startupMessage) {
@@ -25,7 +25,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 	}
 
 	logger.info("Creating client");
-	const client = createClient(config);
+	const client = createClient();
 	context.subscriptions.push(services.registLanguageClient(client));
 
 	context.subscriptions.push(

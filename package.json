@@ -58,6 +58,16 @@
 					"type": "array",
 					"description": "Executable args"
 				},
+				"clojure.keymaps.enable": {
+					"type": "boolean",
+					"default": true,
+					"description": "Create normal-mode mappings for clojure-lsp commands"
+				},
+				"clojure.keymaps.shortcut": {
+					"type": "string",
+					"default": "<leader>cl",
+					"description": "The keyboard shortcut that will prepend the created commands"
+				},
 				"clojure.startup-message": {
 					"type": "boolean",
 					"default": false,

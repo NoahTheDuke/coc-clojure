@@ -3,9 +3,9 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import { LanguageClient, LanguageClientOptions, ServerOptions } from "coc.nvim";
-import { Config, documentSelector } from "./config";
+import { config, documentSelector } from "./config";
 
-export function createClient(config: Config): LanguageClient {
+export function createClient(): LanguageClient {
 	const executable = {
 		command: config.executable,
 		args: config.executableArgs,

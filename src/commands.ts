@@ -10,26 +10,14 @@ import {
 	window,
 	workspace,
 } from "coc.nvim";
+import { config } from "./config";
+import { logger } from "./logger";
 
 type CommandParams = (string | number)[];
 
-interface Command {
-	command: string;
-	title?: string;
-	choices?: string[];
-	fn?: (client: LanguageClient) => Promise<any>;
-	aliases?: string[];
-}
-
-async function getUriAndPosition(): Promise<CommandParams> {
-	const { line, character } = await window.getCursorPosition();
-	const document = await workspace.document;
-	return [document.uri, line, character];
-}
-
 async function getInput(title: string, defaultTitle = ""): Promise<string> {
-	const result = (await window.requestInput(title, defaultTitle)).trim();
-	return result;
+	const result = await window.requestInput(title, defaultTitle);
+	return result.trim();
 }
 
 async function fetchDocs(client: LanguageClient) {
@@ -53,42 +41,145 @@ async function fetchDocs(client: LanguageClient) {
 	}
 }
 
+async function getUriAndPosition(): Promise<CommandParams> {
+	const { line, character } = await window.getCursorPosition();
+	const document = await workspace.document;
+	return [document.uri, line, character];
+}
+
+interface Command {
+	command: string;
+	shortcut?: string;
+	title?: string;
+	choices?: string[];
+	fn?: (client: LanguageClient) => Promise<any>;
+	aliases?: string[];
+}
+
 const clojureCommands: Command[] = [
 	// As defined here: https://clojure-lsp.io/features/#clojure-lsp-extra-commands
-	{ command: "add-import-to-namespace", title: "Import name?" },
+	{
+		command: "add-import-to-namespace",
+		shortcut: "ai",
+		title: "Import name?",
+	},
 	{ command: "add-missing-import" },
-	{ command: "add-missing-libspec" },
-	{ command: "add-require-suggestion" },
-	{ command: "clean-ns" },
-	{ command: "create-function" },
-	{ command: "create-test" },
-	{ command: "cycle-coll" },
-	{ command: "cycle-privacy" },
-	{ command: "demote-fn" },
-	{ command: "drag-backward", aliases: ["move-coll-entry-down"] },
-	{ command: "drag-forward", aliases: ["move-coll-entry-up"] },
-	{ command: "extract-function", title: "Function name?" },
-	{ command: "expand-let" },
-	{ command: "create-function" },
-	{ command: "introduce-let", title: "Bind to?" },
-	{ command: "inline-symbol" },
-	{ command: "move-form", title: "Which file?" },
-	{ command: "move-to-let", title: "Bind to?" },
-	{ command: "promote-fn" },
+	{
+		command: "add-missing-libspec",
+		shortcut: "am",
+	},
+	{
+		command: "add-require-suggestion",
+		shortcut: "as",
+	},
 	{
 		command: "change-coll",
 		title: "New coll type",
 		choices: ["list", "vector", "map", "set"],
 		aliases: ["change-collection"],
 	},
-	{ command: "sort-map" },
-	{ command: "thread-first" },
-	{ command: "thread-first-all" },
-	{ command: "thread-last" },
-	{ command: "thread-last-all" },
-	{ command: "unwind-all" },
-	{ command: "unwind-thread" },
-	{ command: "suppress-diagnostic", title: "Lint to ignore?" },
+	{
+		command: "clean-ns",
+		shortcut: "cn",
+	},
+	{
+		command: "create-function",
+		shortcut: "fe",
+	},
+	{
+		command: "create-test",
+		shortcut: "ct",
+	},
+	{
+		command: "cycle-coll",
+		shortcut: "cc",
+	},
+	{
+		command: "cycle-privacy",
+		shortcut: "cp",
+	},
+	{
+		command: "demote-fn",
+		shortcut: "dm",
+	},
+	{
+		command: "drag-backward",
+		shortcut: "db",
+		aliases: ["move-coll-entry-up"],
+	},
+	{
+		command: "drag-forward",
+		shortcut: "df",
+		aliases: ["move-coll-entry-down"],
+	},
+	{
+		command: "extract-function",
+		shortcut: "ef",
+		title: "Function name?",
+	},
+	{
+		command: "expand-let",
+		shortcut: "el",
+	},
+	{
+		command: "introduce-let",
+		shortcut: "il",
+		title: "Bind to?",
+	},
+	{
+		command: "inline-symbol",
+		shortcut: "is",
+	},
+	{
+		command: "move-form",
+		shortcut: "mf",
+		title: "Which file?",
+	},
+	{
+		command: "move-to-let",
+		shortcut: "ml",
+		title: "Bind to?",
+	},
+	{
+		command: "promote-fn",
+		shortcut: "pf",
+	},
+	{
+		command: "resolve-macro-as",
+		shortcut: "ma",
+	},
+	{
+		command: "sort-map",
+		shortcut: "sm",
+	},
+	{
+		command: "thread-first",
+		shortcut: "th",
+	},
+	{
+		command: "thread-first-all",
+		shortcut: "tf",
+	},
+	{
+		command: "thread-last",
+		shortcut: "tt",
+	},
+	{
+		command: "thread-last-all",
+		shortcut: "tl",
+	},
+	{
+		command: "unwind-all",
+		shortcut: "ua",
+	},
+	{
+		command: "unwind-thread",
+		shortcut: "uw",
+	},
+	{
+		command: "suppress-diagnostic",
+		title: "Lint to ignore?",
+	},
 	{
 		command: "docs",
 		fn: fetchDocs,
@@ -187,38 +278,77 @@ async function executePromptCommand(
 	}
 }
 
-function registerCommand(client: LanguageClient, cmd: Command): Disposable[] {
+function registerCommand(
+	context: ExtensionContext,
+	client: LanguageClient,
+	cmd: Command
+): void {
 	const { command, fn, title, choices, aliases } = cmd;
 	const id = `lsp-clojure-${command}`;
 	const func = async () => {
 		if (choices && !workspace.env.dialog) {
+			logger.info(`Workspace doesn't allow dialogs, cancelling command ${id}`);
 			return;
 		} else if (fn) {
 			const { fn } = cmd;
+			logger.debug(`Executing 'fn' command ${id}`);
 			return fn(client);
 		} else if (choices) {
+			logger.debug(`Executing 'choices' command ${id}`);
 			await executeChoicesCommand(client, cmd);
 		} else if (title) {
+			logger.debug(`Executing 'prompt' command ${id}`);
 			await executePromptCommand(client, cmd);
 		} else {
+			logger.debug(`Executing 'position' command ${id}`);
 			await executePositionCommand(client, cmd);
 		}
 	};
-	const newCommands = [commands.registerCommand(id, func)];
+
+	logger.debug(`Registering command ${id}`);
+	context.subscriptions.push(commands.registerCommand(id, func));
+
 	if (aliases) {
 		aliases.forEach((alias) => {
 			const aliasId = `lsp-clojure-${alias}`;
-			newCommands.push(commands.registerCommand(aliasId, func));
+			logger.debug(`Registering command ${aliasId} as alias of ${id}`);
+			context.subscriptions.push(commands.registerCommand(aliasId, func));
 		});
 	}
-	return newCommands;
+}
+
+function registerKeymap(context: ExtensionContext, cmd: Command): void {
+	const { command, shortcut } = cmd;
+	const id = `lsp-clojure-${command}`;
+	const { keymaps } = config;
+	const keymap = `${keymaps.shortcut}${shortcut}`;
+	try {
+		logger.debug(`Creating keymap '${keymap}' for command '${id}'`);
+		workspace.nvim.command(
+			`nnoremap <silent> ${keymap} :call CocActionAsync('runCommand', '${id}')<CR>`,
+			true
+		);
+		context.subscriptions.push(
+			Disposable.create(() => {
+				workspace.nvim.command(`nunmap ${keymap}`, true);
+			})
+		);
+	} catch (e) {
+		logger.error(`Can't create keymapping ${keymap} for command ${command}`, e);
+	}
 }
 
 export function registerCommands(
 	context: ExtensionContext,
 	client: LanguageClient
 ): void {
-	context.subscriptions.push(
-		...clojureCommands.flatMap((cmd) => registerCommand(client, cmd))
-	);
+	for (const cmd of clojureCommands) {
+		registerCommand(context, client, cmd);
+	}
+
+	if (config.keymaps.enable) {
+		for (const cmd of clojureCommands.filter((cmd) => cmd.shortcut)) {
+			registerKeymap(context, cmd);
+		}
+	}
 }
