@@ -15,19 +15,21 @@
 		"url": "https://github.com/NoahTheDuke/coc-clojure.git"
 	},
 	"engines": {
-		"coc": "^0.0.80"
+		"coc": "^0.0.81"
 	},
 	"scripts": {
 		"lint": "eslint src --ext ts",
+		"lintf": "eslint package.json src --ext ts --fix",
 		"clean": "rimraf lib",
-		"watch": "node esbuild.js --watch",
+		"watch": "NODE_ENV=development node esbuild.js --watch",
 		"build": "node esbuild.js",
-		"prepare": "node esbuild.js"
+		"prepare": "npm run clean && npm run lintf -- --quiet && NODE_ENV=production node esbuild.js"
 	},
 	"devDependencies": {
+		"@types/node": "^12.12.0",
 		"@typescript-eslint/eslint-plugin": "^5.25.0",
 		"@typescript-eslint/parser": "^5.25.0",
-		"coc.nvim": "^0.0.81-next.29",
+		"coc.nvim": "^0.0.81",
 		"esbuild": "^0.14.39",
 		"eslint": "^8.15.0",
 		"eslint-config-prettier": "^8.1.0",
@@ -104,11 +106,12 @@
 							"description": "clj-kondo specific settings",
 							"properties": {
 								"level": {
-									"description": "",
+									"description": "Enable or disable clj-kondo linting",
 									"enum": [
 										"off",
 										"on"
-									]
+									],
+									"default": "on"
 								},
 								"report-duplicates": {
 									"type": "boolean",
@@ -359,11 +362,15 @@
 		"commands": [
 			{
 				"command": "lsp-clojure-add-import-to-namespace",
-				"title": "Add an import to current namespace declaration"
+				"title": "Add specific require form to current namespace declaration"
+			},
+			{
+				"command": "lsp-clojure-add-missing-import",
+				"title": "Add Java import for symbol under cursor to current namespace declaration"
 			},
 			{
 				"command": "lsp-clojure-add-missing-libspec",
-				"title": "Add missing library require form"
+				"title": "Add require form for symbol under cursor to current namespace declaration"
 			},
 			{
 				"command": "lsp-clojure-add-require-suggestion",
@@ -374,16 +381,24 @@
 				"title": "Choose new type of collection"
 			},
 			{
+				"command": "lsp-clojure-change-collection",
+				"title": "Choose new type of collection"
+			},
+			{
 				"command": "lsp-clojure-clean-ns",
 				"title": "Sort and remove unused required libraries in namespace declaration"
 			},
 			{
 				"command": "lsp-clojure-create-function",
-				"title": "Create a function from the current expression"
+				"title": "Create a function from the current form"
 			},
 			{
 				"command": "lsp-clojure-create-test",
 				"title": "Creates a test somewhere, who knows"
+			},
+			{
+				"command": "lsp-clojure-cursor-info",
+				"title": "Show debugging information for the symbol at cursor"
 			},
 			{
 				"command": "lsp-clojure-cycle-coll",
@@ -394,12 +409,28 @@
 				"title": "Cycle the privacy of current function definition"
 			},
 			{
+				"command": "lsp-clojure-demote-fn",
+				"title": "Demote fn to #()"
+			},
+			{
+				"command": "lsp-clojure-docs",
+				"title": "Read the docs for a given symbol (in given namespace)"
+			},
+			{
+				"command": "lsp-clojure-drag-backward",
+				"title": "Move coll entry backwards in collection (will move map entries)"
+			},
+			{
+				"command": "lsp-clojure-drag-forward",
+				"title": "Move coll entry forwards in collection (will move map entries)"
+			},
+			{
 				"command": "lsp-clojure-expand-let",
-				"title": "Move current let expression up a level"
+				"title": "Move current let form up a level"
 			},
 			{
 				"command": "lsp-clojure-extract-function",
-				"title": "Move current expression into new top-level function"
+				"title": "Move current form into new top-level function"
 			},
 			{
 				"command": "lsp-clojure-inline-symbol",
@@ -407,23 +438,43 @@
 			},
 			{
 				"command": "lsp-clojure-introduce-let",
-				"title": "Move current expression to let-bound variable"
+				"title": "Move current form to let-bound variable"
 			},
 			{
 				"command": "lsp-clojure-move-coll-entry-down",
 				"title": "Move the current element (or pair) down within the collection"
 			},
 			{
+				"command": "lsp-clojure-move-coll-entry-down",
+				"title": "Move coll entry forwards in collection (will move map entries)"
+			},
+			{
 				"command": "lsp-clojure-move-coll-entry-up",
 				"title": "Move the current element (or pair) up within the collection"
 			},
 			{
+				"command": "lsp-clojure-move-coll-entry-up",
+				"title": "Move coll entry backwards in collection (will move map entries)"
+			},
+			{
+				"command": "lsp-clojure-move-form",
+				"title": "Move form under cursor to specified file"
+			},
+			{
 				"command": "lsp-clojure-move-to-let",
-				"title": "Move current expression into surrounding let block"
+				"title": "Move current form into surrounding let block"
+			},
+			{
+				"command": "lsp-clojure-promote-fn",
+				"title": "Promote #() to fn, or fn to defn"
 			},
 			{
 				"command": "lsp-clojure-resolve-macro-as",
 				"title": "Add entry to .clj-kondo/config.edn to resolve macro as another macro"
+			},
+			{
+				"command": "lsp-clojure-server-info",
+				"title": "Show server configuration information"
 			},
 			{
 				"command": "lsp-clojure-sort-map",
@@ -435,47 +486,31 @@
 			},
 			{
 				"command": "lsp-clojure-thread-first",
-				"title": "Replace current expression with thread-first expession"
+				"title": "Replace current form with thread-first expession"
 			},
 			{
 				"command": "lsp-clojure-thread-first-all",
-				"title": "Replace current nested expression with thread-first expression"
+				"title": "Replace current and all nested forms with thread-first form"
 			},
 			{
 				"command": "lsp-clojure-thread-last",
-				"title": "Replace current expression with thread-last expession"
+				"title": "Replace current form with thread-last expession"
 			},
 			{
 				"command": "lsp-clojure-thread-last-all",
-				"title": "Replace current nested expression with thread-last expression"
+				"title": "Replace current and all nested forms with thread-last form"
 			},
 			{
 				"command": "lsp-clojure-unwind-all",
-				"title": "Replace expression with nested expression"
+				"title": "Replace entire current threaded form with nested form"
 			},
 			{
 				"command": "lsp-clojure-unwind-thread",
-				"title": "Replace threaded expression with nested expression"
-			},
-			{
-				"command": "lsp-clojure-docs",
-				"title": "Read the docs for a given symbol"
-			},
-			{
-				"command": "lsp-clojure-cursor-info",
-				"title": "Show debugging information for the symbol at cursor"
-			},
-			{
-				"command": "lsp-clojure-server-info",
-				"title": "Show server configuration information"
-			},
-			{
-				"command": "lsp-clojure-server-info-raw",
-				"title": "Show raw server configuration information"
+				"title": "Replace first two forms in current threaded form with nested form"
 			}
 		]
 	},
 	"dependencies": {
-		"lodash": "^4.17.21"
+		"fs-extra": "^10.1.0"
 	}
 }

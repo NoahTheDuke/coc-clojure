@@ -1,7 +1,6 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
-
 import {
 	commands,
 	Disposable,
@@ -10,6 +9,7 @@ import {
 	window,
 	workspace,
 } from "coc.nvim";
+import * as commandsJson from "./commands.json";
 import { config } from "./config";
 import { logger } from "./logger";
 
@@ -56,157 +56,18 @@ interface Command {
 	aliases?: string[];
 }
 
-const clojureCommands: Command[] = [
+const complexCommands: Command[] = [
 	// As defined here: https://clojure-lsp.io/features/#clojure-lsp-extra-commands
-	{
-		command: "add-import-to-namespace",
-		shortcut: "ai",
-		title: "Import name?",
-	},
-	{ command: "add-missing-import" },
-	{
-		command: "add-missing-libspec",
-		shortcut: "am",
-	},
-	{
-		command: "add-require-suggestion",
-		shortcut: "as",
-	},
-	{
-		command: "change-coll",
-		title: "New coll type",
-		choices: ["list", "vector", "map", "set"],
-		aliases: ["change-collection"],
-	},
-	{
-		command: "clean-ns",
-		shortcut: "cn",
-	},
-	{
-		command: "create-function",
-		shortcut: "fe",
-	},
-	{
-		command: "create-test",
-		shortcut: "ct",
-	},
-	{
-		command: "cycle-coll",
-		shortcut: "cc",
-	},
-	{
-		command: "cycle-privacy",
-		shortcut: "cp",
-	},
-	{
-		command: "demote-fn",
-		shortcut: "dm",
-	},
-	{
-		command: "drag-backward",
-		shortcut: "db",
-		aliases: ["move-coll-entry-up"],
-	},
-	{
-		command: "drag-forward",
-		shortcut: "df",
-		aliases: ["move-coll-entry-down"],
-	},
-	{
-		command: "extract-function",
-		shortcut: "ef",
-		title: "Function name?",
-	},
-	{
-		command: "expand-let",
-		shortcut: "el",
-	},
-	{
-		command: "introduce-let",
-		shortcut: "il",
-		title: "Bind to?",
-	},
-	{
-		command: "inline-symbol",
-		shortcut: "is",
-	},
-	{
-		command: "move-form",
-		shortcut: "mf",
-		title: "Which file?",
-	},
-	{
-		command: "move-to-let",
-		shortcut: "ml",
-		title: "Bind to?",
-	},
-	{
-		command: "promote-fn",
-		shortcut: "pf",
-	},
-	{
-		command: "resolve-macro-as",
-		shortcut: "ma",
-	},
-	{
-		command: "sort-map",
-		shortcut: "sm",
-	},
-	{
-		command: "thread-first",
-		shortcut: "th",
-	},
-	{
-		command: "thread-first-all",
-		shortcut: "tf",
-	},
-	{
-		command: "thread-last",
-		shortcut: "tt",
-	},
-	{
-		command: "thread-last-all",
-		shortcut: "tl",
-	},
-	{
-		command: "unwind-all",
-		shortcut: "ua",
-	},
-	{
-		command: "unwind-thread",
-		shortcut: "uw",
-	},
-	{
-		command: "suppress-diagnostic",
-		title: "Lint to ignore?",
-	},
 	{
 		command: "docs",
 		fn: fetchDocs,
 	},
 	{
-		command: "server-cursor-info",
+		command: "cursor-info",
 		fn: async (client) => {
 			const [uri, line, character] = await getUriAndPosition();
 			return client
 				.sendRequest("clojure/cursorInfo/log", {
-					textDocument: { uri },
-					position: {
-						line,
-						character,
-					},
-				})
-				.catch((error) => {
-					window.showErrorMessage(error);
-				});
-		},
-	},
-	{
-		command: "server-cursor-info-raw",
-		fn: async (client) => {
-			const [uri, line, character] = await getUriAndPosition();
-			return client
-				.sendRequest("clojure/cursorInfo/raw", {
 					textDocument: { uri },
 					position: {
 						line,
@@ -226,15 +87,31 @@ const clojureCommands: Command[] = [
 			});
 		},
 	},
-	{
-		command: "server-info-raw",
-		fn: async (client) => {
-			return client.sendRequest("clojure/serverInfo/raw").catch((error) => {
-				window.showErrorMessage(error);
-			});
-		},
-	},
 ];
+
+const clojureCommands: Command[] = (() => {
+	const { data: simpleCommands } = commandsJson as { data: Command[] };
+	const mergedCommands = {};
+	simpleCommands.forEach((cmd) => {
+		const title = cmd.command;
+		if (!mergedCommands[title]) {
+			mergedCommands[title] = {};
+		}
+		for (const [key, value] of Object.entries(cmd)) {
+			mergedCommands[title][key] = value;
+		}
+	});
+	complexCommands.forEach((cmd) => {
+		const title = cmd.command;
+		if (!mergedCommands[title]) {
+			mergedCommands[title] = {};
+		}
+		for (const [key, value] of Object.entries(cmd)) {
+			mergedCommands[title][key] = value;
+		}
+	});
+	return Object.values(mergedCommands);
+})();
 
 async function executePositionCommand(
 	client: LanguageClient,

@@ -9,7 +9,7 @@ async function start(watch) {
 		mainFields: ["module", "main"],
 		external: ["coc.nvim"],
 		platform: "node",
-		target: "node10.12",
+		target: "node12",
 		outfile: "lib/index.js",
 	});
 }

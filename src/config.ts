@@ -3,7 +3,6 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import { workspace } from "coc.nvim";
-import { logger } from "./logger";
 
 export const documentSelector = [
 	{ scheme: "file", language: "clojure" },

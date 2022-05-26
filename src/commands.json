@@ -1,0 +1,177 @@
+{
+	"data": [
+		{
+			"command": "add-import-to-namespace",
+			"description": "Add specific require form to current namespace declaration",
+			"prompt": "Library name?",
+			"shortcut": "ai"
+		},
+		{
+			"command": "add-missing-import",
+			"description": "Add Java import for symbol under cursor to current namespace declaration"
+		},
+		{
+			"command": "add-missing-libspec",
+			"description": "Add require form for symbol under cursor to current namespace declaration",
+			"shortcut": "am"
+		},
+		{
+			"command": "add-require-suggestion",
+			"description": "Add suggested require to ns form",
+			"shortcut": "as"
+		},
+		{
+			"aliases": ["change-coll"],
+			"choices": ["list", "vector", "map", "set"],
+			"command": "change-collection",
+			"description": "Choose new type of collection",
+			"prompt": "New coll type"
+		},
+		{
+			"command": "clean-ns",
+			"description": "Sort and remove unused required libraries in namespace declaration",
+			"shortcut": "cn"
+		},
+		{
+			"command": "create-function",
+			"description": "Create a function from the current form",
+			"shortcut": "fe"
+		},
+		{
+			"command": "create-test",
+			"description": "Creates a test somewhere, who knows",
+			"shortcut": "ct"
+		},
+		{
+			"command": "cursor-info",
+			"description": "Show debugging information for the symbol at cursor"
+		},
+		{
+			"command": "cycle-coll",
+			"description": "Cycle the kind of collection: list -> map -> vector -> set -> list",
+			"shortcut": "cc"
+		},
+		{
+			"command": "cycle-privacy",
+			"description": "Cycle the privacy of current function definition",
+			"shortcut": "cp"
+		},
+		{
+			"command": "demote-fn",
+			"description": "Demote fn to #()",
+			"shortcut": "dm"
+		},
+		{
+			"command": "docs",
+			"description": "Read the docs for a given symbol (in given namespace)"
+		},
+		{
+			"aliases": ["move-coll-entry-up"],
+			"command": "drag-backward",
+			"description": "Move coll entry backwards in collection (will move map entries)",
+			"shortcut": "db"
+		},
+		{
+			"aliases": ["move-coll-entry-down"],
+			"command": "drag-forward",
+			"description": "Move coll entry forwards in collection (will move map entries)",
+			"shortcut": "df"
+		},
+		{
+			"command": "expand-let",
+			"description": "Move current let form up a level",
+			"shortcut": "el"
+		},
+		{
+			"command": "extract-function",
+			"description": "Move current form into new top-level function",
+			"prompt": "Function name?",
+			"shortcut": "ef"
+		},
+		{
+			"command": "inline-symbol",
+			"description": "Replace all instances of symbol with symbol definition",
+			"shortcut": "is"
+		},
+		{
+			"command": "introduce-let",
+			"description": "Move current form to let-bound variable",
+			"prompt": "Bind to?",
+			"shortcut": "il"
+		},
+		{
+			"command": "move-coll-entry-down",
+			"description": "Move the current element (or pair) down within the collection"
+		},
+		{
+			"command": "move-coll-entry-up",
+			"description": "Move the current element (or pair) up within the collection"
+		},
+		{
+			"command": "move-form",
+			"description": "Move form under cursor to specified file",
+			"prompt": "Which file?",
+			"shortcut": "mf"
+		},
+		{
+			"command": "move-to-let",
+			"description": "Move current form into surrounding let block",
+			"prompt": "Bind to?",
+			"shortcut": "ml"
+		},
+		{
+			"command": "promote-fn",
+			"description": "Promote #() to fn, or fn to defn",
+			"shortcut": "pf"
+		},
+		{
+			"command": "resolve-macro-as",
+			"description": "Add entry to .clj-kondo/config.edn to resolve macro as another macro",
+			"shortcut": "ma"
+		},
+		{
+			"command": "server-info",
+			"description": "Show server configuration information"
+		},
+		{
+			"command": "sort-map",
+			"description": "Sort entries within current map",
+			"shortcut": "sm"
+		},
+		{
+			"command": "suppress-diagnostic",
+			"description": "Add a :clj-kondo/ignore to suppress linting current line",
+			"prompt": "Lint to ignore?"
+		},
+		{
+			"command": "thread-first",
+			"description": "Replace current form with thread-first expession",
+			"shortcut": "th"
+		},
+		{
+			"command": "thread-first-all",
+			"description": "Replace current and all nested forms with thread-first form",
+			"shortcut": "tf"
+		},
+		{
+			"command": "thread-last",
+			"description": "Replace current form with thread-last expession",
+			"shortcut": "tt"
+		},
+		{
+			"command": "thread-last-all",
+			"description": "Replace current and all nested forms with thread-last form",
+			"shortcut": "tl"
+		},
+		{
+			"command": "unwind-all",
+			"description": "Replace entire current threaded form with nested form",
+			"shortcut": "ua"
+		},
+		{
+			"command": "unwind-thread",
+			"description": "Replace first two forms in current threaded form with nested form",
+			"shortcut": "uw"
+		}
+	]
+}
