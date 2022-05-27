@@ -11,7 +11,6 @@ import {
 	SignatureHelpProvider,
 	TextDocument,
 } from "coc.nvim";
-import { logger } from "./logger";
 
 export class ClojureSignatureHelpProvider implements SignatureHelpProvider {
 	client: LanguageClient;
@@ -25,9 +24,8 @@ export class ClojureSignatureHelpProvider implements SignatureHelpProvider {
 		token: CancellationToken,
 		context: SignatureHelpContext
 	): Promise<SignatureHelp> {
-		logger.info("provideSignatureHelp");
 		return this.client
-			.sendRequest(
+			.sendRequest<SignatureHelp>(
 				"textDocument/signatureHelp",
 				{
 					textDocument: { uri: document.uri },
@@ -36,16 +34,13 @@ export class ClojureSignatureHelpProvider implements SignatureHelpProvider {
 				},
 				token
 			)
-			.then(
-				(res) => res,
-				(error) => {
-					return this.client.handleFailedRequest(
-						{ method: "textDocument/signatureHelp" } as any,
-						token,
-						error,
-						null
-					);
-				}
-			);
+			.catch<null>((error) => {
+				return this.client.handleFailedRequest(
+					{ method: "textDocument/signatureHelp" } as any,
+					token,
+					error,
+					null
+				);
+			});
 	}
 }
