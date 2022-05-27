@@ -90,27 +90,20 @@ const complexCommands: Command[] = [
 ];
 
 const clojureCommands: Command[] = (() => {
-	const { data: simpleCommands } = commandsJson as { data: Command[] };
-	const mergedCommands = {};
-	simpleCommands.forEach((cmd) => {
+	const { commands } = commandsJson as { commands: Command[] };
+	const mergedCommands: Map<string, Command> = new Map();
+	commands.concat(complexCommands).forEach((cmd) => {
 		const title = cmd.command;
-		if (!mergedCommands[title]) {
-			mergedCommands[title] = {};
+		if (!mergedCommands.has(title)) {
+			mergedCommands.set(title, { command: title });
 		}
 		for (const [key, value] of Object.entries(cmd)) {
-			mergedCommands[title][key] = value;
+			if (!mergedCommands.get(title)[key]) {
+				mergedCommands.get(title)[key] = value;
+			}
 		}
 	});
-	complexCommands.forEach((cmd) => {
-		const title = cmd.command;
-		if (!mergedCommands[title]) {
-			mergedCommands[title] = {};
-		}
-		for (const [key, value] of Object.entries(cmd)) {
-			mergedCommands[title][key] = value;
-		}
-	});
-	return Object.values(mergedCommands);
+	return [...mergedCommands.values()];
 })();
 
 async function executePositionCommand(

@@ -6,7 +6,7 @@
    [clojure.set :as set]
    [clojure.string :as str]))
 
-(def commands-json (:data (parse-string (slurp "src/commands.json") true)))
+(def commands-json (:commands (parse-string (slurp "src/commands.json") true)))
 (def aliases (->> commands-json
                   (filter :aliases)
                   (mapcat #(for [a (:aliases %)] (assoc % :command a)))))
