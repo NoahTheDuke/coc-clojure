@@ -107,9 +107,6 @@ dist
 # TernJS port file
 .tern-port
 
-# nrepl
-.nrepl-port
-
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
@@ -119,3 +116,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# clojure stuff
+.nrepl-port
+.lsp/.cache/
+.clj-kondo/.cache/
