@@ -15,7 +15,7 @@ coc.nvim wrapper for [clojure-lsp]. Heavily inspired by and some code borrowed f
 Every refactoring command listed on the [refactoring] page is available. They
 are provided with the `lsp-clojure-` prefix:
 
-[refactoring]: https://clojure-lsp.io/clojure-lsp/capabilities/#refactorings
+[refactoring]: https://clojure-lsp.io/capabilities/#refactorings
 
 - lsp-clojure-add-import-to-namespace
 - lsp-clojure-add-missing-import
