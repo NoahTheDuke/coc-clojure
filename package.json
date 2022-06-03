@@ -1,6 +1,6 @@
 {
 	"name": "coc-clojure",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "coc.nvim wrapper for clojure-lsp",
 	"author": "Noah Bogart <noah.bogart@hey.com>",
 	"license": "MPL-2.0",
