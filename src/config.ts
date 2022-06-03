@@ -28,18 +28,18 @@ export let config: ClojureConfig;
 
 export function setConfig(): void {
 	const rawConfig = workspace.getConfiguration("clojure");
-	const keymaps = rawConfig.inspect<Keymaps>("keymaps");
-	const executable = rawConfig.inspect<string>("executable");
-	const enable = rawConfig.inspect<boolean>("enable");
-	const executableArgs = rawConfig.inspect<string[] | undefined>("executableArgs");
+	const keymaps = rawConfig.inspect<Keymaps>("keymaps")!;
+	const executable = rawConfig.inspect<string>("executable")!;
+	const enable = rawConfig.inspect<boolean>("enable")!;
+	const executableArgs = rawConfig.inspect<string[]>("executableArgs")!;
 	const initializationOptions = rawConfig.inspect<Record<string, unknown>>(
 		"initializationOptions"
-	);
-	const startupMessage = rawConfig.inspect<boolean>("startupMessage");
+	)!;
+	const startupMessage = rawConfig.inspect<boolean>("startupMessage")!;
 	config = {
 		keymaps: {
-			enable: rawConfig.get("keymaps.enable", keymaps.defaultValue.enable),
-			shortcut: rawConfig.get("keymaps.shortcut", keymaps.defaultValue.shortcut),
+			enable: rawConfig.get("keymaps.enable", keymaps.defaultValue?.enable),
+			shortcut: rawConfig.get("keymaps.shortcut", keymaps.defaultValue?.shortcut),
 		},
 		enable: rawConfig.get("enable", enable.defaultValue),
 		executable: rawConfig.get("executable", executable.defaultValue),
@@ -49,5 +49,5 @@ export function setConfig(): void {
 			initializationOptions.defaultValue
 		),
 		startupMessage: rawConfig.get("startup-message", startupMessage.defaultValue),
-	};
+	} as ClojureConfig;
 }

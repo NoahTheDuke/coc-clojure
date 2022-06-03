@@ -12,11 +12,11 @@ import { ClojureSignatureHelpProvider } from "./signature";
 export async function activate(context: ExtensionContext): Promise<void> {
 	setLogger(context);
 
-	logger.warn("inside coc-clojure");
+	logger.info("Starting up coc-clojure");
 	loadConfig();
 	if (!config.enable) return;
 
-	let statusItem: StatusBarItem;
+	let statusItem: StatusBarItem | null = null;
 	if (config.startupMessage) {
 		logger.info("Showing statusItem");
 		statusItem = window.createStatusBarItem(undefined, { progress: true });

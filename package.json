@@ -36,7 +36,7 @@
 		"eslint-plugin-prettier": "^3.1.4",
 		"prettier": "^2.2.0",
 		"rimraf": "^3.0.2",
-		"typescript": "^4.6.4"
+		"typescript": "^4.7.2"
 	},
 	"activationEvents": [
 		"onLanguage:clojure"
@@ -509,8 +509,5 @@
 				"title": "Replace first two forms in current threaded form with nested form"
 			}
 		]
-	},
-	"dependencies": {
-		"fs-extra": "^10.1.0"
 	}
 }

@@ -15,7 +15,11 @@ import { logger } from "./logger";
 
 type CommandParams = (string | number)[];
 
-async function getInput(title: string, defaultTitle = ""): Promise<string> {
+async function getInput(
+	title: string | undefined,
+	defaultTitle = ""
+): Promise<string | undefined> {
+	if (!title) return;
 	const result = await window.requestInput(title, defaultTitle);
 	return result.trim();
 }
@@ -98,8 +102,9 @@ const clojureCommands: Command[] = (() => {
 			mergedCommands.set(title, { command: title });
 		}
 		for (const [key, value] of Object.entries(cmd)) {
-			if (!mergedCommands.get(title)[key]) {
-				mergedCommands.get(title)[key] = value;
+			const command = mergedCommands.get(title);
+			if (command && !command[key as keyof Command]) {
+				command[key as keyof Command] = value;
 			}
 		}
 	});
@@ -122,7 +127,11 @@ async function executePositionCommand(
 		});
 }
 
-async function titleWithChoices(title: string, choices: string[]): Promise<string> {
+async function titleWithChoices(
+	title: string | undefined,
+	choices: string[] | undefined
+): Promise<string | undefined> {
+	if (!title || !choices) return;
 	const result = await window.showMenuPicker(choices, { title });
 	if (result === -1) return;
 	return choices[result];
@@ -133,8 +142,10 @@ async function executeChoicesCommand(
 	cmd: Command
 ): Promise<any> {
 	const { title, choices } = cmd;
-	const extraParam = await titleWithChoices(title, choices);
-	return executePositionCommand(client, cmd, [extraParam]);
+	const choice = await titleWithChoices(title, choices);
+	const extraParams = [];
+	if (choice) extraParams.push(choice);
+	return executePositionCommand(client, cmd, extraParams);
 }
 
 async function executePromptCommand(
@@ -160,7 +171,6 @@ function registerCommand(
 			logger.info(`Workspace doesn't allow dialogs, cancelling command ${id}`);
 			return;
 		} else if (fn) {
-			const { fn } = cmd;
 			logger.debug(`Executing 'fn' command ${id}`);
 			return fn(client);
 		} else if (choices) {

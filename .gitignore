@@ -121,3 +121,6 @@ dist
 .nrepl-port
 .lsp/.cache/
 .clj-kondo/.cache/
+
+# build artifacts
+lib/*

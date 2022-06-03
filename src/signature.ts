@@ -23,7 +23,7 @@ export class ClojureSignatureHelpProvider implements SignatureHelpProvider {
 		position: Position,
 		token: CancellationToken,
 		context: SignatureHelpContext
-	): Promise<SignatureHelp> {
+	): Promise<SignatureHelp | null> {
 		return this.client
 			.sendRequest<SignatureHelp>(
 				"textDocument/signatureHelp",
