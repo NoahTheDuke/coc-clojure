@@ -9,12 +9,13 @@ async function start(watch) {
 		mainFields: ["module", "main"],
 		external: ["coc.nvim"],
 		platform: "node",
-		target: "node12",
+		target: "node14",
 		outfile: "lib/index.js",
 	});
 }
 
 let watch = false;
+let counter = 0;
 if (process.argv.length > 2 && process.argv[2] === "--watch") {
 	console.log("watching...");
 	watch = {
@@ -22,7 +23,7 @@ if (process.argv.length > 2 && process.argv[2] === "--watch") {
 			if (error) {
 				console.error("watch build failed:", error);
 			} else {
-				console.log("watch build succeeded");
+				console.log(`watch build #${counter++} succeeded`);
 			}
 		},
 	};

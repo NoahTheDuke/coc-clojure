@@ -5,7 +5,8 @@
 import { ExtensionContext, languages, services, StatusBarItem, window } from "coc.nvim";
 import { createClient } from "./client";
 import { registerCommands } from "./commands";
-import { config, documentSelector, setConfig as loadConfig } from "./config";
+import { config, documentSelector } from "./config";
+import { findOrDownloadClojureLsp } from "./download/download";
 import { logger, setLogger } from "./logger";
 import { ClojureSignatureHelpProvider } from "./signature";
 
@@ -13,19 +14,23 @@ export async function activate(context: ExtensionContext): Promise<void> {
 	setLogger(context);
 
 	logger.info("Starting up coc-clojure");
-	loadConfig();
-	if (!config.enable) return;
+	if (!config().enable) return;
 
 	let statusItem: StatusBarItem | null = null;
-	if (config.startupMessage) {
-		logger.info("Showing statusItem");
+	if (config().startupMessage) {
 		statusItem = window.createStatusBarItem(undefined, { progress: true });
 		statusItem.text = "Loading clojure-lsp";
 		statusItem.show();
 	}
 
-	logger.info("Creating client");
-	const client = createClient();
+	const clojureLspPath = await findOrDownloadClojureLsp(context);
+	if (!clojureLspPath) {
+		logger.error("No clojure-lsp installed");
+		statusItem?.dispose();
+		return;
+	}
+
+	const client = createClient(clojureLspPath);
 	context.subscriptions.push(services.registLanguageClient(client));
 
 	context.subscriptions.push(
@@ -40,8 +45,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 	await client.onReady();
 
-	if (config.startupMessage) {
-		logger.info("Disposing statusItem");
+	if (config().startupMessage) {
 		statusItem?.dispose();
 		window.showInformationMessage("clojure-lsp loaded!");
 	}

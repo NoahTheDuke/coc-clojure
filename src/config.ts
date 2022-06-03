@@ -3,6 +3,7 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import { workspace } from "coc.nvim";
+import { Dictionary } from "./types";
 
 export const documentSelector = [
 	{ scheme: "file", language: "clojure" },
@@ -19,35 +20,39 @@ export interface ClojureConfig {
 	keymaps: Keymaps;
 	enable: boolean;
 	executable: string;
-	executableArgs: string[] | undefined;
-	initializationOptions: Record<string, unknown>;
+	executableArgs: string[];
+	initializationOptions: Dictionary<unknown>;
+	lspVersion: string;
+	lspInstallPath: string | undefined;
 	startupMessage: boolean;
 }
 
-export let config: ClojureConfig;
-
-export function setConfig(): void {
+export function config(): ClojureConfig {
 	const rawConfig = workspace.getConfiguration("clojure");
 	const keymaps = rawConfig.inspect<Keymaps>("keymaps")!;
 	const executable = rawConfig.inspect<string>("executable")!;
 	const enable = rawConfig.inspect<boolean>("enable")!;
-	const executableArgs = rawConfig.inspect<string[]>("executableArgs")!;
-	const initializationOptions = rawConfig.inspect<Record<string, unknown>>(
+	const initializationOptions = rawConfig.inspect<Dictionary<unknown>>(
 		"initializationOptions"
 	)!;
+	const lspVersion = rawConfig.inspect<string>("lsp-version")!;
 	const startupMessage = rawConfig.inspect<boolean>("startupMessage")!;
-	config = {
+
+	return {
 		keymaps: {
 			enable: rawConfig.get("keymaps.enable", keymaps.defaultValue?.enable),
 			shortcut: rawConfig.get("keymaps.shortcut", keymaps.defaultValue?.shortcut),
 		},
 		enable: rawConfig.get("enable", enable.defaultValue),
 		executable: rawConfig.get("executable", executable.defaultValue),
-		executableArgs: rawConfig.get("executableArgs", executableArgs.defaultValue),
+		executableArgs:
+			rawConfig.get("executable-args") || rawConfig.get("executableArgs") || [],
 		initializationOptions: rawConfig.get(
 			"initialization-options",
 			initializationOptions.defaultValue
 		),
+		lspVersion: rawConfig.get("lsp-version", lspVersion.defaultValue),
+		lspInstallPath: rawConfig.get("lsp-install-path"),
 		startupMessage: rawConfig.get("startup-message", startupMessage.defaultValue),
 	} as ClojureConfig;
 }

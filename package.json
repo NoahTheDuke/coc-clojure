@@ -26,20 +26,25 @@
 		"prepare": "npm run clean && npm run lintf -- --quiet && NODE_ENV=production node esbuild.js"
 	},
 	"devDependencies": {
-		"@types/node": "^12.12.0",
+		"@types/follow-redirects": "^1.14.1",
+		"@types/node": "^12.20.54",
+		"@types/which": "^2.0.1",
 		"@typescript-eslint/eslint-plugin": "^5.25.0",
 		"@typescript-eslint/parser": "^5.25.0",
 		"coc.nvim": "^0.0.81",
 		"esbuild": "^0.14.39",
 		"eslint": "^8.15.0",
 		"eslint-config-prettier": "^8.1.0",
-		"eslint-plugin-prettier": "^3.1.4",
+		"eslint-plugin-prettier": "^4.0.0",
 		"prettier": "^2.2.0",
 		"rimraf": "^3.0.2",
-		"typescript": "^4.7.2"
+		"typescript": "^4.7.3"
 	},
 	"activationEvents": [
-		"onLanguage:clojure"
+		"onLanguage:clojure",
+		"workspaceContains:**/project.clj",
+		"workspaceContains:**/shadow-cljs.edn",
+		"workspaceContains:**/deps.edn"
 	],
 	"contributes": {
 		"configuration": {
@@ -51,14 +56,33 @@
 					"default": true,
 					"description": "Enable/disable coc-clojure extension"
 				},
+				"clojure.lsp-version": {
+					"type": "string",
+					"default": "latest",
+					"description": "The version of clojure-lsp to install, aka '2022.05.31-17.35.50'. Can also be 'latest' or 'nightly'"
+				},
+				"clojure.lsp-install-path": {
+					"type": "string",
+					"description": "Where to install clojure-lsp. If blank, defaults to coc's data folder"
+				},
 				"clojure.executable": {
 					"type": "string",
 					"default": "clojure-lsp",
 					"description": "Path to executable"
 				},
+				"clojure.executable-args": {
+					"type": "array",
+					"description": "Executable args",
+					"items": {
+						"type": "string"
+					}
+				},
 				"clojure.executableArgs": {
 					"type": "array",
-					"description": "Executable args"
+					"deprecationMessage": "Please use 'clojure.executable-args'",
+					"items": {
+						"type": "string"
+					}
 				},
 				"clojure.keymaps.enable": {
 					"type": "boolean",
@@ -91,7 +115,10 @@
 				},
 				"clojure.initialization-options.source-aliases": {
 					"type": "array",
-					"description": "Used for deps.edn projects, the aliases which clojure-lsp should get the source-paths besides the root level :paths and :extra-paths."
+					"description": "Used for deps.edn projects, the aliases which clojure-lsp should get the source-paths besides the root level :paths and :extra-paths.",
+					"items": {
+						"type": "string"
+					}
 				},
 				"clojure.initialization-options.use-source-paths-from-classpath": {
 					"type": "boolean",
@@ -509,5 +536,9 @@
 				"title": "Replace first two forms in current threaded form with nested form"
 			}
 		]
+	},
+	"dependencies": {
+		"extract-zip": "^2.0.1",
+		"follow-redirects": "^1.15.1"
 	}
 }

@@ -3,13 +3,24 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import { LanguageClient, LanguageClientOptions, ServerOptions } from "coc.nvim";
+import path from "path";
 import { config, documentSelector } from "./config";
+import { logger } from "./logger";
 
-export function createClient(): LanguageClient {
-	const executable = {
-		command: config.executable,
-		args: config.executableArgs,
-	};
+export function createClient(clojureLspPath: string): LanguageClient {
+	logger.info("Creating client");
+
+	const executable =
+		path.extname(clojureLspPath) === ".jar"
+			? {
+					command: path.join(process.env.JAVA_HOME!, "bin", "java"),
+					args: ["-jar", clojureLspPath],
+			  }
+			: {
+					command: clojureLspPath,
+					args: config().executableArgs,
+			  };
+	logger.debug("ServerOptions", executable);
 
 	const serverOptions: ServerOptions = {
 		run: executable,
@@ -18,7 +29,7 @@ export function createClient(): LanguageClient {
 	const clientOptions: LanguageClientOptions = {
 		disabledFeatures: ["signatureHelp"],
 		documentSelector,
-		initializationOptions: config.initializationOptions,
+		initializationOptions: config().initializationOptions,
 	};
 	const client = new LanguageClient(
 		"clojure",
