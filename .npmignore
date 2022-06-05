@@ -11,3 +11,7 @@ yarn-error.log
 .github
 .eslintrc.js
 .prettierrc
+.markdownlint*
+.editorconfig
+CHANGELOG.md
+bin/
