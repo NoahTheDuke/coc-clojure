@@ -7,19 +7,25 @@ import path from "path";
 import { config, documentSelector } from "./config";
 import { logger } from "./logger";
 
-export function createClient(clojureLspPath: string): LanguageClient {
+export function createClient(clojureLspPath: string): LanguageClient | undefined {
 	logger.info("Creating client");
 
-	const executable =
-		path.extname(clojureLspPath) === ".jar"
-			? {
-					command: path.join(process.env.JAVA_HOME!, "bin", "java"),
-					args: ["-jar", clojureLspPath],
-			  }
-			: {
-					command: clojureLspPath,
-					args: config().executableArgs,
-			  };
+	const usingAJar = path.extname(clojureLspPath) === ".jar";
+	const javaHome = process.env.JAVA_HOME;
+	if (usingAJar && !javaHome) {
+		logger.error("Trying to use a jar without JAVA_HOME.");
+		return;
+	}
+
+	const executable = usingAJar
+		? {
+				command: path.join(process.env.JAVA_HOME!, "bin", "java"),
+				args: ["-jar", clojureLspPath],
+		  }
+		: {
+				command: clojureLspPath,
+				args: config().executableArgs,
+		  };
 	logger.debug("ServerOptions", executable);
 
 	const serverOptions: ServerOptions = {

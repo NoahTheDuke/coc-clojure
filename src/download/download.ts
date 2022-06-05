@@ -12,6 +12,7 @@ import fs, { existsSync, mkdirSync } from "fs";
 import { homedir } from "os";
 import path from "path";
 import { URL } from "url";
+import which from "which";
 import { config } from "../config";
 import { logger } from "../logger";
 import {
@@ -162,32 +163,55 @@ export async function downloadClojureLsp(
 }
 
 function findExisting(extensionPath: string): string | undefined {
-	// Does it exist globally?
-	{
-		let { executable } = config();
+	let { executable } = config();
 
+	// Is clojure-lsp an executable on the PATH?
+	{
+		const executableOnPath = which.sync(executable, { nothrow: true });
+		if (executableOnPath) return executableOnPath;
+	}
+
+	// Is `executable` a path?
+	{
 		if (executable.startsWith("~/")) {
 			executable = executable.replace("~", homedir());
 		}
-
 		if (existsSync(executable)) return executable;
 	}
 
 	// Did coc-clojure already install it previously?
 	{
 		let { lspInstallPath } = config();
-		let executable: string;
-
-		if (lspInstallPath) {
-			if (lspInstallPath.startsWith("~/")) {
-				lspInstallPath = lspInstallPath.replace("~", homedir());
-			}
-			executable = getClojureLspPath(lspInstallPath);
+		if (lspInstallPath?.startsWith("~/")) {
+			lspInstallPath = lspInstallPath.replace("~", homedir());
 		} else {
-			executable = getClojureLspPath(extensionPath);
+			lspInstallPath = extensionPath;
 		}
-
+		executable = getClojureLspPath(lspInstallPath);
 		if (existsSync(executable)) return executable;
+	}
+}
+
+async function maybeDownloadClojureLsp(
+	extensionPath: string,
+	msg: string
+): Promise<string | undefined> {
+	const choice = await window.showQuickpick(
+		["Yes", "No"],
+		`clojure-lsp is ${msg}. Download from Github?`
+	);
+	if (choice == 0) {
+		const { lspVersion, lspInstallPath } = config();
+		const currentVersion = readVersionFile(extensionPath);
+		const downloadVersion = ["", "latest"].includes(lspVersion)
+			? await getLatestVersion()
+			: lspVersion;
+		if (currentVersion !== downloadVersion && downloadVersion !== "") {
+			const path = lspInstallPath || extensionPath;
+			const bin = await downloadClojureLsp(path, downloadVersion);
+			logger.info(`Successfully downloaded clojure-lsp to ${bin}`);
+			return bin;
+		}
 	}
 }
 
@@ -201,29 +225,17 @@ export async function findOrDownloadClojureLsp(
 	}
 	let bin = findExisting(extensionPath);
 
-	if (bin) return bin;
+	logger.debug("existing clojure-lsp bin:", bin);
 
-	const choice = await window.showQuickpick(
-		["Yes", "No"],
-		"clojure-lsp is not found. Download from Github?"
-	);
-	if (choice === 0) {
-		const currentVersion = readVersionFile(extensionPath);
-		const { lspVersion, lspInstallPath } = config();
-		const downloadVersion = ["", "latest"].includes(lspVersion)
-			? await getLatestVersion()
-			: lspVersion;
-		if (
-			(currentVersion !== downloadVersion && downloadVersion !== "") ||
-			downloadVersion === "nightly"
-		) {
-			let path = lspInstallPath || extensionPath;
-			if (path.startsWith("~/")) {
-				path = path.replace("~", homedir());
-			}
-			bin = await downloadClojureLsp(path, downloadVersion);
-			logger.info(`Successfully downloaded clojure-lsp to ${bin}`);
+	if (bin) {
+		const defaultBin = getClojureLspPath(extensionPath);
+		// Is the bin installed at the default location so we can update it?
+		if (config().checkOnStart && bin === defaultBin) {
+			bin = await maybeDownloadClojureLsp(extensionPath, "outdated");
 		}
+	} else {
+		bin = await maybeDownloadClojureLsp(extensionPath, "not found");
 	}
+
 	return bin;
 }

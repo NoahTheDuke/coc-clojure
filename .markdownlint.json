@@ -1,0 +1,12 @@
+{
+	"blanks-around-headings": {
+		"lines_below": 0
+	},
+	"blanks-around-lists": false,
+	"line-length": {
+		"line_length": 88
+	},
+	"no-duplicate-heading": {
+		"siblings_only": true
+	}
+}

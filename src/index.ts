@@ -31,6 +31,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
 	}
 
 	const client = createClient(clojureLspPath);
+	if (!client) {
+		statusItem?.dispose();
+		return;
+	}
+
 	context.subscriptions.push(services.registLanguageClient(client));
 
 	context.subscriptions.push(

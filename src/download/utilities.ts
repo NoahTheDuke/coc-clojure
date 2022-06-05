@@ -14,7 +14,7 @@ const artifacts: Dictionary<Dictionary<string>> = {
 	darwin: {
 		x64: "clojure-lsp-native-macos-amd64.zip",
 		// Should M1 Macs use emulated native binary or native standalone jar until M1 native available?
-		// arm64: 'clojure-lsp-native-macos-amd64.zip',
+		arm64: "clojure-lsp-native-macos-amd64.zip",
 	},
 	linux: {
 		x64: "clojure-lsp-native-static-linux-amd64.zip",

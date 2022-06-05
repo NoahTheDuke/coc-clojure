@@ -36,6 +36,7 @@
 		"eslint": "^8.15.0",
 		"eslint-config-prettier": "^8.1.0",
 		"eslint-plugin-prettier": "^4.0.0",
+		"markdownlint-cli": "^0.31.1",
 		"prettier": "^2.2.0",
 		"rimraf": "^3.0.2",
 		"typescript": "^4.7.3"
@@ -60,6 +61,11 @@
 					"type": "string",
 					"default": "latest",
 					"description": "The version of clojure-lsp to install, aka '2022.05.31-17.35.50'. Can also be 'latest' or 'nightly'"
+				},
+				"clojure.lsp-check-on-start": {
+					"type": "boolean",
+					"default": true,
+					"description": "Check for newer versions of clojure-lsp on start"
 				},
 				"clojure.lsp-install-path": {
 					"type": "string",
@@ -539,6 +545,7 @@
 	},
 	"dependencies": {
 		"extract-zip": "^2.0.1",
-		"follow-redirects": "^1.15.1"
+		"follow-redirects": "^1.15.1",
+		"which": "^2.0.2"
 	}
 }

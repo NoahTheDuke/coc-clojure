@@ -3,6 +3,7 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import { workspace } from "coc.nvim";
+import { homedir } from "os";
 import { Dictionary } from "./types";
 
 export const documentSelector = [
@@ -17,18 +18,20 @@ interface Keymaps {
 }
 
 export interface ClojureConfig {
-	keymaps: Keymaps;
+	checkOnStart: boolean;
 	enable: boolean;
 	executable: string;
 	executableArgs: string[];
 	initializationOptions: Dictionary<unknown>;
-	lspVersion: string;
+	keymaps: Keymaps;
 	lspInstallPath: string | undefined;
+	lspVersion: string;
 	startupMessage: boolean;
 }
 
 export function config(): ClojureConfig {
 	const rawConfig = workspace.getConfiguration("clojure");
+	const checkOnStart = rawConfig.inspect<boolean>("lsp-check-on-start");
 	const keymaps = rawConfig.inspect<Keymaps>("keymaps")!;
 	const executable = rawConfig.inspect<string>("executable")!;
 	const enable = rawConfig.inspect<boolean>("enable")!;
@@ -38,7 +41,10 @@ export function config(): ClojureConfig {
 	const lspVersion = rawConfig.inspect<string>("lsp-version")!;
 	const startupMessage = rawConfig.inspect<boolean>("startupMessage")!;
 
+	const lspInstallPath = rawConfig.get<string>("lsp-install-path");
+
 	return {
+		checkOnStart: rawConfig.get("lsp-check-on-start", checkOnStart?.defaultValue),
 		keymaps: {
 			enable: rawConfig.get("keymaps.enable", keymaps.defaultValue?.enable),
 			shortcut: rawConfig.get("keymaps.shortcut", keymaps.defaultValue?.shortcut),
@@ -51,8 +57,10 @@ export function config(): ClojureConfig {
 			"initialization-options",
 			initializationOptions.defaultValue
 		),
-		lspVersion: rawConfig.get("lsp-version", lspVersion.defaultValue),
-		lspInstallPath: rawConfig.get("lsp-install-path"),
+		lspVersion: rawConfig.get("lsp-version", lspVersion.defaultValue || ""),
+		lspInstallPath: lspInstallPath?.startsWith("~")
+			? lspInstallPath.replace("~", homedir())
+			: lspInstallPath,
 		startupMessage: rawConfig.get("startup-message", startupMessage.defaultValue),
 	} as ClojureConfig;
 }
