@@ -9,10 +9,15 @@ this project adheres to no versioning scheme.
 
 ## [Unreleased]
 
+### Added
+- Add config options to readme.
+
+### Fixed
+- .npmignore now ignores `.editorconfig`, `.markdownlint.json`, `.markdownlintignore`
+
 ## [0.0.8] - 2022-06-05
 
 ### Added
-
 - Start writing a changelog.
 - Add markdown linting with [markdownlint] (configured with `.markdownlint.json` and
     `.markdownlintignore`).
@@ -37,7 +42,6 @@ this project adheres to no versioning scheme.
 [#5]: https://github.com/NoahTheDuke/coc-clojure/issues/5
 
 ## Before 0.0.8
-
 - Who knows, it's ancient history.
 
 [Unreleased]: https://github.com/NoahTheDuke/coc-clojure/compare/v0.0.8...HEAD

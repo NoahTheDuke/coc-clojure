@@ -72,6 +72,70 @@ nmap <silent> rtl :call CocAsyncAction('runCommand', 'lsp-clojure-thread-last-al
 command! -nargs=0 RTL :call CocAsyncAction('runCommand', 'lsp-clojure-thread-last-all')
 ```
 
+## Configuration
+
+To be expanded/cleaned up at a later date. Also includes all initialization options from
+`clojure-lsp` itself, not listed here for concision.
+
+```json
+"clojure.enable": {
+    "type": "boolean",
+    "default": true,
+    "description": "Enable/disable coc-clojure extension"
+},
+"clojure.lsp-version": {
+    "type": "string",
+    "default": "latest",
+    "description": "The version of clojure-lsp to install, aka '2022.05.31-17.35.50'. Can also be 'latest' or 'nightly'"
+},
+"clojure.lsp-check-on-start": {
+    "type": "boolean",
+    "default": true,
+    "description": "Check for newer versions of clojure-lsp on start"
+},
+"clojure.lsp-install-path": {
+    "type": "string",
+    "description": "Where to install clojure-lsp. If blank, defaults to coc's data folder"
+},
+"clojure.executable": {
+    "type": "string",
+    "default": "clojure-lsp",
+    "description": "Path to executable"
+},
+"clojure.executable-args": {
+    "type": "array",
+    "description": "Executable args",
+    "items": {
+        "type": "string"
+    }
+},
+"clojure.keymaps.enable": {
+    "type": "boolean",
+    "default": true,
+    "description": "Create normal-mode mappings for clojure-lsp commands"
+},
+"clojure.keymaps.shortcut": {
+    "type": "string",
+    "default": "<leader>cl",
+    "description": "The keyboard shortcut that will prepend the created commands"
+},
+"clojure.startup-message": {
+    "type": "boolean",
+    "default": false,
+    "description": "Enable/disable coc-clojure's message on startup"
+},
+"clojure.trace.server": {
+    "type": "string",
+    "default": "verbose",
+    "enum": [
+        "off",
+        "messages",
+        "verbose"
+    ],
+    "description": "Trace level between vim and clojure-lsp. Trace messages can be seen by calling CocCommand workspace.showOutput."
+},
+```
+
 ## License
 
 MPL 2.0

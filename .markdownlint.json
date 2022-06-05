@@ -4,6 +4,7 @@
 	},
 	"blanks-around-lists": false,
 	"line-length": {
+		"code_blocks": false,
 		"line_length": 88
 	},
 	"no-duplicate-heading": {
