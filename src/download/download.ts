@@ -163,7 +163,7 @@ export async function downloadClojureLsp(
 }
 
 function findExisting(extensionPath: string): string | undefined {
-	let { executable } = config();
+	let { executable, lspInstallPath } = config();
 
 	// Is clojure-lsp an executable on the PATH?
 	{
@@ -181,7 +181,6 @@ function findExisting(extensionPath: string): string | undefined {
 
 	// Did coc-clojure already install it previously?
 	{
-		let { lspInstallPath } = config();
 		if (lspInstallPath?.startsWith("~/")) {
 			lspInstallPath = lspInstallPath.replace("~", homedir());
 		} else {

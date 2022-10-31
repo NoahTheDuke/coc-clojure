@@ -12,7 +12,7 @@ export const documentSelector = [
 	{ scheme: "zipfile", language: "clojure" },
 ];
 
-interface Keymaps {
+export interface Keymaps {
 	enable: boolean;
 	shortcut: string;
 }
@@ -31,36 +31,30 @@ export interface ClojureConfig {
 
 export function config(): ClojureConfig {
 	const rawConfig = workspace.getConfiguration("clojure");
-	const checkOnStart = rawConfig.inspect<boolean>("lsp-check-on-start");
-	const keymaps = rawConfig.inspect<Keymaps>("keymaps")!;
-	const executable = rawConfig.inspect<string>("executable")!;
-	const enable = rawConfig.inspect<boolean>("enable")!;
-	const initializationOptions = rawConfig.inspect<Dictionary<unknown>>(
-		"initializationOptions"
-	)!;
-	const lspVersion = rawConfig.inspect<string>("lsp-version")!;
-	const startupMessage = rawConfig.inspect<boolean>("startupMessage")!;
-
 	const lspInstallPath = rawConfig.get<string>("lsp-install-path");
+	const initializationOptions = rawConfig.get<Dictionary<any>>(
+		"initialization-options",
+		{}
+	);
+	const logPath = rawConfig.get<string>("initialization-options.log-path");
+	if (logPath === rawConfig.inspect("initialization-options.log-path")?.defaultValue) {
+		initializationOptions["log-path"] = undefined;
+	}
 
 	return {
-		checkOnStart: rawConfig.get("lsp-check-on-start", checkOnStart?.defaultValue),
-		keymaps: {
-			enable: rawConfig.get("keymaps.enable", keymaps.defaultValue?.enable),
-			shortcut: rawConfig.get("keymaps.shortcut", keymaps.defaultValue?.shortcut),
-		},
-		enable: rawConfig.get("enable", enable.defaultValue),
-		executable: rawConfig.get("executable", executable.defaultValue),
+		checkOnStart: rawConfig.get("lsp-check-on-start"),
+		keymaps: rawConfig.get("keymaps"),
+		enable: rawConfig.get("enable"),
+		executable: rawConfig.get("executable"),
 		executableArgs:
-			rawConfig.get("executable-args") || rawConfig.get("executableArgs") || [],
-		initializationOptions: rawConfig.get(
-			"initialization-options",
-			initializationOptions.defaultValue
-		),
-		lspVersion: rawConfig.get("lsp-version", lspVersion.defaultValue || ""),
+			rawConfig.get("executable-args", null) ||
+			rawConfig.get("executableArgs", null) ||
+			[],
+		initializationOptions,
+		lspVersion: rawConfig.get("lsp-version"),
 		lspInstallPath: lspInstallPath?.startsWith("~")
 			? lspInstallPath.replace("~", homedir())
 			: lspInstallPath,
-		startupMessage: rawConfig.get("startup-message", startupMessage.defaultValue),
+		startupMessage: rawConfig.get("startup-message"),
 	} as ClojureConfig;
 }

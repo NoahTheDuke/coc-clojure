@@ -1,6 +1,7 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 import {
 	commands,
 	Disposable,
@@ -10,7 +11,7 @@ import {
 	workspace,
 } from "coc.nvim";
 import * as commandsJson from "./commands.json";
-import { config } from "./config";
+import { config, Keymaps } from "./config.js";
 import { logger } from "./logger";
 import { Dictionary } from "./types";
 
@@ -71,25 +72,19 @@ const complexCommands: Command[] = [
 		command: "cursor-info",
 		fn: async (client) => {
 			const [uri, line, character] = await getUriAndPosition();
-			return client
-				.sendRequest("clojure/cursorInfo/log", {
-					textDocument: { uri },
-					position: {
-						line,
-						character,
-					},
-				})
-				.catch((error) => {
-					window.showErrorMessage(error);
-				});
+			client.sendNotification("clojure/cursorInfo/log", {
+				textDocument: { uri },
+				position: {
+					line,
+					character,
+				},
+			});
 		},
 	},
 	{
 		command: "server-info",
 		fn: async (client) => {
-			return client.sendRequest("clojure/serverInfo/log").catch((error) => {
-				window.showErrorMessage(error);
-			});
+			client.sendNotification("clojure/serverInfo/log");
 		},
 	},
 ];
@@ -109,7 +104,7 @@ const clojureCommands: Command[] = (() => {
 			}
 		}
 	});
-	return [...mergedCommands.values()];
+	return Array.from(mergedCommands.values());
 })();
 
 async function executePositionCommand(
@@ -198,10 +193,13 @@ function registerCommand(
 	}
 }
 
-function registerKeymap(context: ExtensionContext, cmd: Command): void {
+function registerKeymap(
+	context: ExtensionContext,
+	cmd: Command,
+	keymaps: Keymaps
+): void {
 	const { command, shortcut } = cmd;
 	const id = `lsp-clojure-${command}`;
-	const { keymaps } = config();
 	const keymap = `${keymaps.shortcut}${shortcut}`;
 	try {
 		logger.debug(`Creating keymap '${keymap}' for command '${id}'`);
@@ -227,9 +225,10 @@ export function registerCommands(
 		registerCommand(context, client, cmd);
 	}
 
-	if (config().keymaps.enable) {
+	const { keymaps } = config();
+	if (keymaps.enable) {
 		for (const cmd of clojureCommands.filter((cmd) => cmd.shortcut)) {
-			registerKeymap(context, cmd);
+			registerKeymap(context, cmd, keymaps);
 		}
 	}
 }

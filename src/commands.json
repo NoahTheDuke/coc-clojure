@@ -22,7 +22,7 @@
 		},
 		{
 			"aliases": ["change-coll"],
-			"choices": ["list", "vector", "map", "set"],
+			"choices": ["list", "map", "set", "vector"],
 			"command": "change-collection",
 			"description": "Choose new type of collection",
 			"prompt": "New coll type"
@@ -62,20 +62,35 @@
 			"shortcut": "dm"
 		},
 		{
+			"command": "destructure-keys",
+			"description": "Destructure keys",
+			"shortcut": "dk"
+		},
+		{
 			"command": "docs",
 			"description": "Read the docs for a given symbol (in given namespace)"
 		},
 		{
 			"aliases": ["move-coll-entry-up"],
 			"command": "drag-backward",
-			"description": "Move coll entry backwards in collection (will move map entries)",
+			"description": "Move coll entry backward in collection",
 			"shortcut": "db"
+		},
+		{
+			"command": "drag-param-backward",
+			"description": "Move param backwards in function definition (and all call sites)",
+			"shortcut": "ab"
 		},
 		{
 			"aliases": ["move-coll-entry-down"],
 			"command": "drag-forward",
-			"description": "Move coll entry forwards in collection (will move map entries)",
+			"description": "Move coll entry forward in collection",
 			"shortcut": "df"
+		},
+		{
+			"command": "drag-param-forward",
+			"description": "Move param forward in function definition (and all call sites)",
+			"shortcut": "af"
 		},
 		{
 			"command": "expand-let",
@@ -89,6 +104,32 @@
 			"shortcut": "ef"
 		},
 		{
+			"command": "extract-to-def",
+			"description": "Move current form into new top-level def",
+			"prompt": "Symbol name?",
+			"shortcut": "ed"
+		},
+		{
+			"command": "get-in-all",
+			"description": "Replace current and all nested forms with get-in form",
+			"shortcut": "ga"
+		},
+		{
+			"command": "get-in-less",
+			"description": "Replace first form in current get-in form with nested form",
+			"shortcut": "gl"
+		},
+		{
+			"command": "get-in-more",
+			"description": "Move current form to current get-in form",
+			"shortcut": "gm"
+		},
+		{
+			"command": "get-in-none",
+			"description": "Replace entire current get-in form with nested form",
+			"shortcut": "gn"
+		},
+		{
 			"command": "inline-symbol",
 			"description": "Replace all instances of symbol with symbol definition",
 			"shortcut": "is"
@@ -98,14 +139,6 @@
 			"description": "Move current form to let-bound variable",
 			"prompt": "Bind to?",
 			"shortcut": "il"
-		},
-		{
-			"command": "move-coll-entry-down",
-			"description": "Move the current element (or pair) down within the collection"
-		},
-		{
-			"command": "move-coll-entry-up",
-			"description": "Move the current element (or pair) up within the collection"
 		},
 		{
 			"command": "move-form",
@@ -130,13 +163,19 @@
 			"shortcut": "ma"
 		},
 		{
+			"command": "restructure-keys",
+			"description": "Inline destructured keys with nested calls",
+			"shortcut": "rk"
+		},
+		{
 			"command": "server-info",
 			"description": "Show server configuration information"
 		},
 		{
-			"command": "sort-map",
-			"description": "Sort entries within current map",
-			"shortcut": "sm"
+			"aliases": ["sort-map"],
+			"command": "sort-clauses",
+			"description": "Sort entries within current clauses/list/map/set/vector",
+			"shortcut": "sl"
 		},
 		{
 			"command": "suppress-diagnostic",
