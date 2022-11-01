@@ -9,7 +9,7 @@ import { Dictionary } from "./types";
 export const documentSelector = [
 	{ scheme: "file", language: "clojure" },
 	{ scheme: "jar", language: "clojure" },
-	{ scheme: "zipfile", language: "clojure" },
+	{ scheme: "zip", language: "clojure" },
 ];
 
 export interface Keymaps {
