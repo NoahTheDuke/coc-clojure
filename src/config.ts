@@ -9,7 +9,7 @@ import { Dictionary } from "./types";
 export const documentSelector = [
 	{ scheme: "file", language: "clojure" },
 	{ scheme: "jar", language: "clojure" },
-	{ scheme: "zip", language: "clojure" },
+	{ scheme: "zipfile", language: "clojure" },
 ];
 
 export interface Keymaps {
@@ -33,13 +33,8 @@ export function config(): ClojureConfig {
 	const rawConfig = workspace.getConfiguration("clojure");
 	const lspInstallPath = rawConfig.get<string>("lsp-install-path");
 	const initializationOptions = rawConfig.get<Dictionary<any>>(
-		"initialization-options",
-		{}
+		"initialization-options"
 	);
-	const logPath = rawConfig.get<string>("initialization-options.log-path");
-	if (logPath === rawConfig.inspect("initialization-options.log-path")?.defaultValue) {
-		initializationOptions["log-path"] = undefined;
-	}
 
 	return {
 		checkOnStart: rawConfig.get("lsp-check-on-start"),

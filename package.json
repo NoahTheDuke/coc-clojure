@@ -367,7 +367,6 @@
 				},
 				"clojure.initialization-options.log-path": {
 					"type": "string",
-					"default": "/tmp/clojure-lsp.*.out",
 					"description": "A absolute path to a file where clojure-lsp should log."
 				},
 				"clojure.initialization-options.notify-references-on-file-change": {
@@ -398,8 +397,7 @@
 								"classpath-cmd"
 							]
 						}
-					},
-					"default": []
+					}
 				},
 				"clojure.initialization-options.semantic-tokens?": {
 					"type": "boolean",
