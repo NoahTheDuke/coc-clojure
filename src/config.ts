@@ -29,12 +29,33 @@ export interface ClojureConfig {
 	startupMessage: boolean;
 }
 
+// adapted from: https://stackoverflow.com/a/42736367/3023252
+function clearEmpties(o: any) {
+	for (const k in o) {
+		if (!o[k] || typeof o[k] !== "object") {
+			continue;
+		}
+		clearEmpties(o[k]);
+		if (Object.keys(o[k]).length === 0) {
+			delete o[k];
+		}
+	}
+	return o;
+}
+
 export function config(): ClojureConfig {
 	const rawConfig = workspace.getConfiguration("clojure");
 	const lspInstallPath = rawConfig.get<string>("lsp-install-path");
-	const initializationOptions = rawConfig.get<Dictionary<any>>(
-		"initialization-options"
-	);
+	const initializationOptions = {
+		...rawConfig.get<Dictionary<any>>("initialization-options", {}),
+	};
+
+	clearEmpties(initializationOptions);
+	for (const [key, val] of Object.entries(initializationOptions)) {
+		if (Array.isArray(val) && val.length === 0) {
+			delete initializationOptions[key];
+		}
+	}
 
 	return {
 		checkOnStart: rawConfig.get("lsp-check-on-start"),
