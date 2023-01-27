@@ -183,7 +183,7 @@
 						}
 					}
 				},
-				"clojure.initialization-options.copy-kond-configs?": {
+				"clojure.initialization-options.copy-kondo-configs?": {
 					"type": "boolean",
 					"description": "Whether to copy clj-kondo hooks configs exported by libs on classpath during startup lint.",
 					"default": true
