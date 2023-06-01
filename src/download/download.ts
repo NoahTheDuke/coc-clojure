@@ -52,11 +52,10 @@ async function fetchFromUrl(fullUrl: string): Promise<string> {
 
 export async function getLatestVersion(): Promise<string> {
 	try {
-		const releasesJSON = await fetchFromUrl(
-			"https://api.github.com/repos/clojure-lsp/clojure-lsp/releases"
+		const latestReleaseRaw = await fetchFromUrl(
+			"https://api.github.com/repos/clojure-lsp/clojure-lsp/releases/latest"
 		);
-		const releases = JSON.parse(releasesJSON);
-		return releases[0].tag_name;
+		return JSON.parse(latestReleaseRaw).tag_name;
 	} catch (e: any) {
 		logger.error("Error while finding latest clojure-lsp version.", e.message);
 		return "";
@@ -195,17 +194,18 @@ async function maybeDownloadClojureLsp(
 	extensionPath: string,
 	msg: string
 ): Promise<string | undefined> {
-	const choice = await window.showQuickpick(
-		["Yes", "No"],
-		`clojure-lsp is ${msg}. Download from Github?`
-	);
-	if (choice == 0) {
-		const { lspVersion, lspInstallPath } = config();
-		const currentVersion = readVersionFile(extensionPath);
-		const downloadVersion = ["", "latest"].includes(lspVersion)
-			? await getLatestVersion()
-			: lspVersion;
-		if (currentVersion !== downloadVersion && downloadVersion !== "") {
+	const { lspVersion, lspInstallPath } = config();
+	const currentVersion = readVersionFile(extensionPath);
+	const downloadVersion = ["", "latest"].includes(lspVersion)
+		? await getLatestVersion()
+		: lspVersion;
+
+	if (currentVersion !== downloadVersion && downloadVersion !== "") {
+		const choice = await window.showQuickpick(
+			["Yes", "No"],
+			`clojure-lsp is ${msg}. Download from Github?`
+		);
+		if (choice == 0) {
 			const path = lspInstallPath || extensionPath;
 			const bin = await downloadClojureLsp(path, downloadVersion);
 			logger.info(`Successfully downloaded clojure-lsp to ${bin}`);
@@ -230,7 +230,7 @@ export async function findOrDownloadClojureLsp(
 		const defaultBin = getClojureLspPath(extensionPath);
 		// Is the bin installed at the default location so we can update it?
 		if (config().checkOnStart && bin === defaultBin) {
-			bin = await maybeDownloadClojureLsp(extensionPath, "outdated");
+			bin = await maybeDownloadClojureLsp(extensionPath, "outdated") || bin;
 		}
 	} else {
 		bin = await maybeDownloadClojureLsp(extensionPath, "not found");
