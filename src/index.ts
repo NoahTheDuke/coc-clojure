@@ -32,6 +32,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 	const client = createClient(clojureLspPath);
 	if (!client) {
+		logger.error("clojure-lsp did not initialize");
 		statusItem?.dispose();
 		return;
 	}
@@ -42,8 +43,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
 		languages.registerSignatureHelpProvider(
 			documentSelector,
 			new ClojureSignatureHelpProvider(client),
-			["(", " "]
-		)
+			["(", " "],
+		),
 	);
 
 	registerCommands(context, client);

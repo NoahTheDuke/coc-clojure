@@ -1,14 +1,9 @@
 {
 	"commands": [
 		{
-			"command": "add-import-to-namespace",
-			"description": "Add specific require form to current namespace declaration",
-			"prompt": "Library name?",
-			"shortcut": "ai"
-		},
-		{
 			"command": "add-missing-import",
-			"description": "Add Java import for symbol under cursor to current namespace declaration"
+			"description": "Add Java import for symbol under cursor to current namespace declaration",
+			"shortcut": "ai"
 		},
 		{
 			"command": "add-missing-libspec",
@@ -19,6 +14,16 @@
 			"command": "add-require-suggestion",
 			"description": "Add suggested require to ns form",
 			"shortcut": "as"
+		},
+		{
+			"command": "backward-barf",
+			"description": "Paredit: backward barf",
+			"shortcut": "bb"
+		},
+		{
+			"command": "backward-slurp",
+			"description": "Paredit: backward slurp",
+			"shortcut": "bs"
 		},
 		{
 			"aliases": ["change-coll"],
@@ -77,15 +82,15 @@
 			"shortcut": "db"
 		},
 		{
-			"command": "drag-param-backward",
-			"description": "Move param backwards in function definition (and all call sites)",
-			"shortcut": "ab"
-		},
-		{
 			"aliases": ["move-coll-entry-down"],
 			"command": "drag-forward",
 			"description": "Move coll entry forward in collection",
 			"shortcut": "df"
+		},
+		{
+			"command": "drag-param-backward",
+			"description": "Move param backwards in function definition (and all call sites)",
+			"shortcut": "ab"
 		},
 		{
 			"command": "drag-param-forward",
@@ -108,6 +113,16 @@
 			"description": "Move current form into new top-level def",
 			"prompt": "Symbol name?",
 			"shortcut": "ed"
+		},
+		{
+			"command": "forward-barf",
+			"description": "Paredit: forward barf",
+			"shortcut": "fb"
+		},
+		{
+			"command": "forward-slurp",
+			"description": "Paredit: forward slurp",
+			"shortcut": "fs"
 		},
 		{
 			"command": "get-in-all",
@@ -141,6 +156,11 @@
 			"shortcut": "il"
 		},
 		{
+			"command": "kill-sexp",
+			"description": "Paredit: Kill sexp",
+			"shortcut": "ks"
+		},
+		{
 			"command": "move-form",
 			"description": "Move form under cursor to specified file",
 			"prompt": "Which file?",
@@ -153,9 +173,28 @@
 			"shortcut": "ml"
 		},
 		{
+			"command": "project-tree",
+			"description": "Show project source-paths and external dependencies"
+		},
+		{
 			"command": "promote-fn",
 			"description": "Promote #() to fn, or fn to defn",
 			"shortcut": "pf"
+		},
+		{
+			"command": "raise-sexp",
+			"description": "Paredit: Raise sexp",
+			"shortcut": "rs"
+		},
+		{
+			"command": "replace-refer-all-with-alias",
+			"description": "Replace ':refer :all' with alias",
+			"shortcut": "ra"
+		},
+		{
+			"command": "replace-refer-all-with-refer",
+			"description": "Replace ':refer :all' with ':refer [...]'",
+			"shortcut": "rr"
 		},
 		{
 			"command": "resolve-macro-as",
@@ -181,6 +220,10 @@
 			"command": "suppress-diagnostic",
 			"description": "Add a :clj-kondo/ignore to suppress linting current line",
 			"prompt": "Lint to ignore?"
+		},
+		{
+			"command": "test-tree",
+			"description": "Show tests as tree of data for potential UI"
 		},
 		{
 			"command": "thread-first",

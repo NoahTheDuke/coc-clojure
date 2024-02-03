@@ -559,10 +559,6 @@
 		},
 		"commands": [
 			{
-				"command": "lsp-clojure-add-import-to-namespace",
-				"title": "Add specific require form to current namespace declaration"
-			},
-			{
 				"command": "lsp-clojure-add-missing-import",
 				"title": "Add Java import for symbol under cursor to current namespace declaration"
 			},
@@ -573,6 +569,14 @@
 			{
 				"command": "lsp-clojure-add-require-suggestion",
 				"title": "Add suggested require to ns form"
+			},
+			{
+				"command": "lsp-clojure-backward-barf",
+				"title": "Paredit: backward barf"
+			},
+			{
+				"command": "lsp-clojure-backward-slurp",
+				"title": "Paredit: backward slurp"
 			},
 			{
 				"command": "lsp-clojure-change-coll",
@@ -647,6 +651,14 @@
 				"title": "Move current form into new top-level def"
 			},
 			{
+				"command": "lsp-clojure-forward-barf",
+				"title": "Paredit: forward barf"
+			},
+			{
+				"command": "lsp-clojure-forward-slurp",
+				"title": "Paredit: forward slurp"
+			},
+			{
 				"command": "lsp-clojure-get-in-all",
 				"title": "Replace current and all nested forms with get-in form"
 			},
@@ -671,6 +683,10 @@
 				"title": "Move current form to let-bound variable"
 			},
 			{
+				"command": "lsp-clojure-kill-sexp",
+				"title": "Paredit: Kill sexp"
+			},
+			{
 				"command": "lsp-clojure-move-coll-entry-down",
 				"title": "Move coll entry forward in collection"
 			},
@@ -687,8 +703,24 @@
 				"title": "Move current form into surrounding let block"
 			},
 			{
+				"command": "lsp-clojure-project-tree",
+				"title": "Show project source-paths and external dependencies"
+			},
+			{
 				"command": "lsp-clojure-promote-fn",
 				"title": "Promote #() to fn, or fn to defn"
+			},
+			{
+				"command": "lsp-clojure-raise-sexp",
+				"title": "Paredit: Raise sexp"
+			},
+			{
+				"command": "lsp-clojure-replace-refer-all-with-alias",
+				"title": "Replace ':refer :all' with alias"
+			},
+			{
+				"command": "lsp-clojure-replace-refer-all-with-refer",
+				"title": "Replace ':refer :all' with ':refer [...]'"
 			},
 			{
 				"command": "lsp-clojure-resolve-macro-as",
@@ -713,6 +745,10 @@
 			{
 				"command": "lsp-clojure-suppress-diagnostic",
 				"title": "Add a :clj-kondo/ignore to suppress linting current line"
+			},
+			{
+				"command": "lsp-clojure-test-tree",
+				"title": "Show tests as tree of data for potential UI"
 			},
 			{
 				"command": "lsp-clojure-thread-first",

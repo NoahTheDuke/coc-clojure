@@ -41,7 +41,7 @@ async function fetchFromUrl(fullUrl: string): Promise<string> {
 					res.on("end", () => {
 						resolve(data);
 					});
-				}
+				},
 			)
 			.on("error", (err: any) => {
 				logger.error(`Error downloading file from ${url}: ${err.message}`);
@@ -53,7 +53,7 @@ async function fetchFromUrl(fullUrl: string): Promise<string> {
 export async function getLatestVersion(): Promise<string> {
 	try {
 		const latestReleaseRaw = await fetchFromUrl(
-			"https://api.github.com/repos/clojure-lsp/clojure-lsp/releases/latest"
+			"https://api.github.com/repos/clojure-lsp/clojure-lsp/releases/latest",
 		);
 		return JSON.parse(latestReleaseRaw).tag_name;
 	} catch (e: any) {
@@ -133,7 +133,7 @@ async function unzipFile(zipFilePath: string, extensionPath: string): Promise<vo
 
 export async function downloadClojureLsp(
 	extensionPath: string,
-	version: string
+	version: string,
 ): Promise<string> {
 	const artifactName = getArtifactDownloadName();
 	const url =
@@ -192,7 +192,7 @@ function findExisting(extensionPath: string): string | undefined {
 
 async function maybeDownloadClojureLsp(
 	extensionPath: string,
-	msg: string
+	msg: string,
 ): Promise<string | undefined> {
 	const { lspVersion, lspInstallPath } = config();
 	const currentVersion = readVersionFile(extensionPath);
@@ -203,7 +203,7 @@ async function maybeDownloadClojureLsp(
 	if (currentVersion !== downloadVersion && downloadVersion !== "") {
 		const choice = await window.showQuickpick(
 			["Yes", "No"],
-			`clojure-lsp is ${msg}. Download from Github?`
+			`clojure-lsp is ${msg}. Download from Github?`,
 		);
 		if (choice == 0) {
 			const path = lspInstallPath || extensionPath;
@@ -216,7 +216,7 @@ async function maybeDownloadClojureLsp(
 
 // Finds or downloads the clojure-lsp executable, returns the path
 export async function findOrDownloadClojureLsp(
-	context: ExtensionContext
+	context: ExtensionContext,
 ): Promise<string | undefined> {
 	const extensionPath = context.storagePath;
 	if (!existsSync(extensionPath)) {
@@ -230,7 +230,7 @@ export async function findOrDownloadClojureLsp(
 		const defaultBin = getClojureLspPath(extensionPath);
 		// Is the bin installed at the default location so we can update it?
 		if (config().checkOnStart && bin === defaultBin) {
-			bin = await maybeDownloadClojureLsp(extensionPath, "outdated") || bin;
+			bin = (await maybeDownloadClojureLsp(extensionPath, "outdated")) || bin;
 		}
 	} else {
 		bin = await maybeDownloadClojureLsp(extensionPath, "not found");

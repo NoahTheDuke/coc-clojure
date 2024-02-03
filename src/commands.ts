@@ -13,13 +13,14 @@ import {
 import * as commandsJson from "./commands.json";
 import { config, Keymaps } from "./config.js";
 import { logger } from "./logger";
+import { projectTree } from "./tree";
 import { Dictionary } from "./types";
 
 type CommandParams = (string | number)[];
 
 async function getInput(
 	title: string | undefined,
-	defaultTitle = ""
+	defaultTitle = "",
 ): Promise<string | undefined> {
 	if (!title) return;
 	const result = await window.requestInput(title, defaultTitle);
@@ -87,6 +88,16 @@ const complexCommands: Command[] = [
 			client.sendNotification("clojure/serverInfo/log");
 		},
 	},
+	{
+		command: "test-tree",
+		fn: async (client) => {
+			client.sendRequest("clojure/textDocument/testTree");
+		},
+	},
+	{
+		command: "project-tree",
+		fn: projectTree,
+	},
 ];
 
 const clojureCommands: Command[] = (() => {
@@ -97,8 +108,8 @@ const clojureCommands: Command[] = (() => {
 		if (!mergedCommands.has(title)) {
 			mergedCommands.set(title, { command: title });
 		}
+		const command = mergedCommands.get(title);
 		for (const [key, value] of Object.entries(cmd)) {
-			const command = mergedCommands.get(title);
 			if (command && !command[key as keyof Command]) {
 				command[key as keyof Command] = value;
 			}
@@ -110,7 +121,7 @@ const clojureCommands: Command[] = (() => {
 async function executePositionCommand(
 	client: LanguageClient,
 	{ command }: Command,
-	extraParams: CommandParams = []
+	extraParams: CommandParams = [],
 ): Promise<any> {
 	const position = await getUriAndPosition();
 	return client
@@ -125,7 +136,7 @@ async function executePositionCommand(
 
 async function titleWithChoices(
 	title: string | undefined,
-	choices: string[] | undefined
+	choices: string[] | undefined,
 ): Promise<string | undefined> {
 	if (!title || !choices) return;
 	const result = await window.showMenuPicker(choices, { title });
@@ -135,7 +146,7 @@ async function titleWithChoices(
 
 async function executeChoicesCommand(
 	client: LanguageClient,
-	cmd: Command
+	cmd: Command,
 ): Promise<any> {
 	const { title, choices } = cmd;
 	const choice = await titleWithChoices(title, choices);
@@ -146,7 +157,7 @@ async function executeChoicesCommand(
 
 async function executePromptCommand(
 	client: LanguageClient,
-	cmd: Command
+	cmd: Command,
 ): Promise<any> {
 	const { title } = cmd;
 	const extraParam = await getInput(title);
@@ -158,7 +169,7 @@ async function executePromptCommand(
 function registerCommand(
 	context: ExtensionContext,
 	client: LanguageClient,
-	cmd: Command
+	cmd: Command,
 ): void {
 	const { command, fn, title, choices, aliases } = cmd;
 	const id = `lsp-clojure-${command}`;
@@ -196,21 +207,23 @@ function registerCommand(
 function registerKeymap(
 	context: ExtensionContext,
 	cmd: Command,
-	keymaps: Keymaps
+	keymaps: Keymaps,
 ): void {
 	const { command, shortcut } = cmd;
 	const id = `lsp-clojure-${command}`;
 	const keymap = `${keymaps.shortcut}${shortcut}`;
 	try {
 		logger.debug(`Creating keymap '${keymap}' for command '${id}'`);
+		const rhs = `':call CocActionAsync("runCommand", "${id}")<CR>'`;
+		const opts = `{'silent': v:true, 'noremap': v:true, 'desc': '${id}'}`;
 		workspace.nvim.command(
-			`nnoremap <silent> ${keymap} :call CocActionAsync('runCommand', '${id}')<CR>`,
-			true
+			`call nvim_set_keymap('n', '${keymap}', ${rhs}, ${opts})`,
+			true,
 		);
 		context.subscriptions.push(
 			Disposable.create(() => {
 				workspace.nvim.command(`nunmap ${keymap}`, true);
-			})
+			}),
 		);
 	} catch (e) {
 		logger.error(`Can't create keymapping ${keymap} for command ${command}`, e);
@@ -219,7 +232,7 @@ function registerKeymap(
 
 export function registerCommands(
 	context: ExtensionContext,
-	client: LanguageClient
+	client: LanguageClient,
 ): void {
 	for (const cmd of clojureCommands) {
 		registerCommand(context, client, cmd);

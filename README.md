@@ -17,10 +17,11 @@ are provided with the `lsp-clojure-` prefix:
 
 [refactoring]: https://clojure-lsp.io/capabilities/#refactorings
 
-- lsp-clojure-add-import-to-namespace
 - lsp-clojure-add-missing-import
 - lsp-clojure-add-missing-libspec
 - lsp-clojure-add-require-suggestion
+- lsp-clojure-backward-barf
+- lsp-clojure-backward-slurp
 - lsp-clojure-change-coll
 - lsp-clojure-change-collection
 - lsp-clojure-clean-ns
@@ -39,23 +40,31 @@ are provided with the `lsp-clojure-` prefix:
 - lsp-clojure-expand-let
 - lsp-clojure-extract-function
 - lsp-clojure-extract-to-def
+- lsp-clojure-forward-barf
+- lsp-clojure-forward-slurp
 - lsp-clojure-get-in-all
 - lsp-clojure-get-in-less
 - lsp-clojure-get-in-more
 - lsp-clojure-get-in-none
 - lsp-clojure-inline-symbol
 - lsp-clojure-introduce-let
+- lsp-clojure-kill-sexp
 - lsp-clojure-move-coll-entry-down
 - lsp-clojure-move-coll-entry-up
 - lsp-clojure-move-form
 - lsp-clojure-move-to-let
+- lsp-clojure-project-tree
 - lsp-clojure-promote-fn
+- lsp-clojure-raise-sexp
+- lsp-clojure-replace-refer-all-with-alias
+- lsp-clojure-replace-refer-all-with-refer
 - lsp-clojure-resolve-macro-as
 - lsp-clojure-restructure-keys
 - lsp-clojure-server-info
 - lsp-clojure-sort-clauses
 - lsp-clojure-sort-map
 - lsp-clojure-suppress-diagnostic
+- lsp-clojure-test-tree
 - lsp-clojure-thread-first
 - lsp-clojure-thread-first-all
 - lsp-clojure-thread-last

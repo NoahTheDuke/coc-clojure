@@ -27,7 +27,7 @@ const artifacts: Dictionary<Dictionary<string>> = {
 
 export function getArtifactDownloadName(
 	platform: string = process.platform,
-	arch: string = process.arch
+	arch: string = process.arch,
 ): string {
 	return artifacts[platform]?.[arch] ?? "clojure-lsp-standalone.jar";
 }
@@ -35,7 +35,7 @@ export function getArtifactDownloadName(
 export function getClojureLspPath(
 	extensionPath: string,
 	platform: string = process.platform,
-	arch: string = process.arch
+	arch: string = process.arch,
 ): string {
 	let name = getArtifactDownloadName(platform, arch);
 	if (path.extname(name).toLowerCase() !== ".jar") {

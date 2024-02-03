@@ -2,10 +2,26 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-import { LanguageClient, LanguageClientOptions, ServerOptions } from "coc.nvim";
+import {
+	LanguageClient,
+	LanguageClientOptions,
+	ServerOptions,
+	StaticFeature,
+} from "coc.nvim";
 import path from "path";
 import { config, documentSelector } from "./config";
 import { logger } from "./logger";
+
+class ExperimentalCapabilities implements StaticFeature {
+	fillClientCapabilities(capabilities: any): void {
+		const experimental = capabilities.experimental ?? {};
+		experimental.projectTree = true;
+		experimental.testTree = true;
+		capabilities.experimental = experimental;
+	}
+	initialize(): void {}
+	dispose(): void {}
+}
 
 export function createClient(clojureLspPath: string): LanguageClient | undefined {
 	logger.info("Creating client");
@@ -41,7 +57,8 @@ export function createClient(clojureLspPath: string): LanguageClient | undefined
 		"clojure",
 		"Clojure Language Client",
 		serverOptions,
-		clientOptions
+		clientOptions,
 	);
+	client.registerFeature(new ExperimentalCapabilities());
 	return client;
 }

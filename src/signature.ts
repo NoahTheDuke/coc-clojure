@@ -22,7 +22,7 @@ export class ClojureSignatureHelpProvider implements SignatureHelpProvider {
 		document: TextDocument,
 		position: Position,
 		token: CancellationToken,
-		context: SignatureHelpContext
+		context: SignatureHelpContext,
 	): Promise<SignatureHelp | null> {
 		return this.client
 			.sendRequest<SignatureHelp>(
@@ -32,14 +32,14 @@ export class ClojureSignatureHelpProvider implements SignatureHelpProvider {
 					position,
 					context,
 				},
-				token
+				token,
 			)
 			.catch<null>((error) => {
 				return this.client.handleFailedRequest(
 					{ method: "textDocument/signatureHelp" } as any,
 					token,
 					error,
-					null
+					null,
 				);
 			});
 	}
