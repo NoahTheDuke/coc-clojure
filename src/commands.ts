@@ -59,7 +59,7 @@ interface Command {
 	shortcut?: string;
 	title?: string;
 	choices?: string[];
-	fn?: (client: LanguageClient) => Promise<any>;
+	fn?: (client: LanguageClient, context: ExtensionContext) => Promise<any>;
 	aliases?: string[];
 }
 
@@ -179,7 +179,7 @@ function registerCommand(
 			return;
 		} else if (fn) {
 			logger.debug(`Executing 'fn' command ${id}`);
-			return fn(client);
+			return fn(client, context);
 		} else if (choices) {
 			logger.debug(`Executing 'choices' command ${id}`);
 			await executeChoicesCommand(client, cmd);
@@ -240,8 +240,10 @@ export function registerCommands(
 
 	const { keymaps } = config();
 	if (keymaps.enable) {
-		for (const cmd of clojureCommands.filter((cmd) => cmd.shortcut)) {
-			registerKeymap(context, cmd, keymaps);
+		for (const cmd of clojureCommands) {
+			if (cmd.shortcut) {
+				registerKeymap(context, cmd, keymaps);
+			}
 		}
 	}
 }
