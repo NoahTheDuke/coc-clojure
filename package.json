@@ -26,6 +26,11 @@
 		"test": "",
 		"prepare": "npm run clean && npm run lintf -- --quiet && NODE_ENV=production node esbuild.js"
 	},
+	"dependencies": {
+		"extract-zip": "^2.0.1",
+		"follow-redirects": "^1.15.1",
+		"which": "^2.0.2"
+	},
 	"devDependencies": {
 		"@types/follow-redirects": "^1.14.4",
 		"@types/node": "^14.18.63",
@@ -774,10 +779,5 @@
 				"title": "Replace first two forms in current threaded form with nested form"
 			}
 		]
-	},
-	"dependencies": {
-		"extract-zip": "^2.0.1",
-		"follow-redirects": "^1.15.1",
-		"which": "^2.0.2"
 	}
 }
