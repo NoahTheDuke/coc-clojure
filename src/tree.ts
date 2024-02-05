@@ -3,12 +3,9 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import {
-	CancellationToken,
-	commands,
 	Emitter,
 	ExtensionContext,
 	LanguageClient,
-	ProviderResult,
 	Range,
 	TreeDataProvider,
 	TreeItem,
@@ -65,6 +62,8 @@ interface ProjectTreeNodeBranch {
 	nodes: ProjectTreeNode[];
 }
 
+// Clojure doesn't care about optional keys and doesn't include a :node-type
+// discriminant, so a union more accurately reflects working with the input.
 type ProjectTreeNode = ProjectTreeNodeBranch & ProjectTreeNodeLeaf;
 
 async function requestProjectTree(
