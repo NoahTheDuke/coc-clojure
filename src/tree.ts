@@ -62,8 +62,8 @@ interface ProjectTreeNodeBranch {
 	nodes: ProjectTreeNode[];
 }
 
-// Clojure doesn't care about optional keys and doesn't include a :node-type
-// discriminant, so a union more accurately reflects working with the input.
+// Clojure doesn't care about optional keys and adding a discriminant is annoying, so
+// a union best suites the input.
 type ProjectTreeNode = ProjectTreeNodeBranch & ProjectTreeNodeLeaf;
 
 async function requestProjectTree(
@@ -101,7 +101,9 @@ class ProjectTree implements TreeDataProvider<ProjectTreeNode> {
 	public getTreeItem(node: ProjectTreeNode): TreeItem {
 		logger.debug("getTreeItem", JSON.stringify(node, null, 4));
 		const item = new TreeItem(node.name);
-		item.description = node.detail;
+		const nodeType = ProjectTreeNodeType[node.type];
+		const detail = node.detail ? ` (${node.detail})` : "";
+		item.description = `${nodeType}${detail}`;
 
 		if (node.nodes?.length > 0) {
 			item.collapsibleState = TreeItemCollapsibleState.Expanded;
@@ -111,7 +113,7 @@ class ProjectTree implements TreeDataProvider<ProjectTreeNode> {
 		if (node.uri) {
 			item.resourceUri = Uri.parse(node.uri);
 		}
-		if (node.range && this.winid) {
+		if (this.doc === item.resourceUri && node.range && this.winid) {
 			item.command = {
 				title: "Jump to",
 				command: "workspace.openLocation",
