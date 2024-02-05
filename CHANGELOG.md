@@ -9,6 +9,30 @@ this project adheres to no versioning scheme.
 
 ## [Unreleased]
 
+## 0.0.15
+
+### Added
+- Support project tree view.
+- Descriptions of each command to better support WhichKey.
+- New commands: `backward-barf`, `forward-barf`, `backward-slurp`, `forward-slurp`,
+    `kill-sexp`, `raise-sexp`, `replace-refer-all-with-alias`,
+    `replace-refer-all-with-refer`, `project-tree`.
+
+### Changed
+- Clean up download logic.
+
+## 0.0.14
+
+## 0.0.13
+
+## 0.0.12
+
+## 0.0.11
+
+## 0.0.10
+
+## 0.0.9
+
 ### Added
 - Add config options to readme.
 
