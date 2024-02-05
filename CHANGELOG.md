@@ -9,17 +9,22 @@ this project adheres to no versioning scheme.
 
 ## [Unreleased]
 
-## 0.0.15
+## 0.0.15 - 2024-02-05
 
 ### Added
 - Support project tree view.
-- Descriptions of each command to better support WhichKey.
+- Descriptions of each command to better support WhichKey. ([Issue #10][coc-clojure
+    issue #10])
 - New commands: `backward-barf`, `forward-barf`, `backward-slurp`, `forward-slurp`,
     `kill-sexp`, `raise-sexp`, `replace-refer-all-with-alias`,
     `replace-refer-all-with-refer`, `project-tree`.
 
-### Changed
-- Clean up download logic.
+[coc-clojure issue #10]: https://github.com/NoahTheDuke/coc-clojure/issues/10
+
+### Fixed
+- Clean up download logic. (via @laur89 [PR][coc-clojure PR #13])
+
+[coc-clojure PR #13]: https://github.com/NoahTheDuke/coc-clojure/pull/13
 
 ## 0.0.14
 
