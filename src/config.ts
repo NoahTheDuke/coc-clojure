@@ -4,7 +4,6 @@
 
 import { workspace } from "coc.nvim";
 import { homedir } from "os";
-import { logger } from "./logger";
 import { Dictionary } from "./types";
 
 export const documentSelector = [

@@ -9,6 +9,12 @@ this project adheres to no versioning scheme.
 
 ## Unreleased
 
+## 0.0.16 - 2024-02-05
+
+### Fixed
+- Update .gitignore to keep lib/index.js.
+- Stop using deprecated `registLanguageClient` method.
+
 ## 0.0.15 - 2024-02-05
 
 ### Added

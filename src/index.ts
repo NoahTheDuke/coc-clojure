@@ -37,7 +37,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 		return;
 	}
 
-	context.subscriptions.push(services.registLanguageClient(client));
+	context.subscriptions.push(services.registerLanguageClient(client));
 
 	context.subscriptions.push(
 		languages.registerSignatureHelpProvider(

@@ -18,7 +18,8 @@ node_modules/
 .env
 .env.test
 .env.production
-lib/
+lib/*
+!lib/index.js
 
 # clojure stuff
 .nrepl-port
