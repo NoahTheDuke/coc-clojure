@@ -113,11 +113,14 @@ class ProjectTree implements TreeDataProvider<ProjectTreeNode> {
 		if (node.uri) {
 			item.resourceUri = Uri.parse(node.uri);
 		}
-		if (this.doc === item.resourceUri && node.range && this.winid) {
+		if (node.range && this.winid) {
 			item.command = {
 				title: "Jump to",
 				command: "workspace.openLocation",
-				arguments: [this.winid, { uri: this.doc, range: node.range }],
+				arguments: [
+					this.winid,
+					{ uri: item.resourceUri || this.doc, range: node.range },
+				],
 			};
 		}
 		return item;
