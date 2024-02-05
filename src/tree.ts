@@ -75,7 +75,7 @@ async function requestProjectTree(
 		"clojure/workspace/projectTree/nodes",
 		param,
 	);
-	logger.debug("raw", JSON.stringify(result));
+	logger.debug("requestProjectTree", JSON.stringify(result, null, 4));
 	return result;
 }
 
@@ -122,21 +122,6 @@ class ProjectTree implements TreeDataProvider<ProjectTreeNode> {
 		return item;
 	}
 
-	public async resolveTreeItem(
-		item: TreeItem | undefined,
-		node: ProjectTreeNode,
-	): Promise<TreeItem | undefined> {
-		logger.debug("resolveTreeItem item", JSON.stringify([item, node], null, 4));
-		const updatedNode = await requestProjectTree(this.client, node);
-		if (!updatedNode) return item;
-		const newItem = this.getTreeItem(updatedNode);
-		logger.debug(
-			"resolveTreeItem result",
-			JSON.stringify([updatedNode, newItem], null, 4),
-		);
-		return newItem;
-	}
-
 	public async getChildren(node?: ProjectTreeNode): Promise<ProjectTreeNode[]> {
 		logger.debug("getChildren", JSON.stringify(node, null, 4));
 		if (node) {
@@ -179,10 +164,5 @@ export async function projectTree(
 		treeDataProvider: adapter,
 	});
 	context.subscriptions.push(treeView);
-	context.subscriptions.push(
-		commands.registerCommand("_project-tree", (node: ProjectTreeNode) => {
-			return adapter.resolveTreeItem(undefined, node);
-		}),
-	);
 	await treeView.show();
 }
