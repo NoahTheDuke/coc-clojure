@@ -24,7 +24,7 @@
 		"watch": "NODE_ENV=development node esbuild.js --watch",
 		"build": "node esbuild.js",
 		"test": "",
-		"prepare": "npm run clean && npm run lintf -- --quiet && NODE_ENV=production node esbuild.js"
+		"release": "npm run clean && npm run lintf -- --quiet && NODE_ENV=production node esbuild.js"
 	},
 	"dependencies": {
 		"extract-zip": "^2.0.1",
