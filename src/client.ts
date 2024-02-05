@@ -37,11 +37,11 @@ export function createClient(clojureLspPath: string): LanguageClient | undefined
 		? {
 				command: path.join(process.env.JAVA_HOME!, "bin", "java"),
 				args: ["-jar", clojureLspPath],
-		  }
+			}
 		: {
 				command: clojureLspPath,
 				args: config().executableArgs,
-		  };
+			};
 	logger.debug("ServerOptions", executable);
 
 	const serverOptions: ServerOptions = {
