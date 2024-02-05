@@ -7,24 +7,23 @@ this project adheres to no versioning scheme.
 
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0/
 
-## [Unreleased]
+## Unreleased
 
 ## 0.0.15 - 2024-02-05
 
 ### Added
 - Support project tree view.
-- Descriptions of each command to better support WhichKey. ([Issue #10][coc-clojure
-    issue #10])
+- Descriptions of each command to better support WhichKey. ([#10])
 - New commands: `backward-barf`, `forward-barf`, `backward-slurp`, `forward-slurp`,
     `kill-sexp`, `raise-sexp`, `replace-refer-all-with-alias`,
     `replace-refer-all-with-refer`, `project-tree`.
 
-[coc-clojure issue #10]: https://github.com/NoahTheDuke/coc-clojure/issues/10
+[#10]: https://github.com/NoahTheDuke/coc-clojure/issues/10
 
 ### Fixed
-- Clean up download logic. (via @laur89 [PR][coc-clojure PR #13])
+- Clean up download logic. (via @laur89 [#13])
 
-[coc-clojure PR #13]: https://github.com/NoahTheDuke/coc-clojure/pull/13
+[#13]: https://github.com/NoahTheDuke/coc-clojure/pull/13
 
 ## 0.0.14
 
@@ -44,7 +43,7 @@ this project adheres to no versioning scheme.
 ### Fixed
 - .npmignore now ignores `.editorconfig`, `.markdownlint.json`, `.markdownlintignore`
 
-## [0.0.8] - 2022-06-05
+## 0.0.8 - 2022-06-05
 
 ### Added
 - Start writing a changelog.
@@ -72,6 +71,3 @@ this project adheres to no versioning scheme.
 
 ## Before 0.0.8
 - Who knows, it's ancient history.
-
-[Unreleased]: https://github.com/NoahTheDuke/coc-clojure/compare/v0.0.8...HEAD
-[0.0.8]: https://github.com/NoahTheDuke/coc-clojure/compare/v0.0.7...v0.0.8
