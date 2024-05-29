@@ -9,6 +9,13 @@ this project adheres to no versioning scheme.
 
 ## Unreleased
 
+## 0.0.17 - 2024-05-29
+
+### Fixed
+- Correct issue with 'prompt' commands, specifically `extract-function`. ([#14])
+
+[#14]: https://github.com/NoahTheDuke/coc-clojure/issues/14
+
 ## 0.0.16 - 2024-02-05
 
 ### Fixed

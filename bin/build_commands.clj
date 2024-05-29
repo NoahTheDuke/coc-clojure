@@ -3,7 +3,6 @@
    [babashka.fs :as fs]
    [babashka.process :as p]
    [cheshire.core :refer [generate-string parse-string]]
-   [clojure.set :as set]
    [clojure.string :as str]))
 
 (def commands-json (-> (slurp "src/commands.json")
@@ -20,9 +19,8 @@
 
 (def commands-for-package
   (->> (concat commands-json aliases)
-       (map #(-> (set/rename-keys % {:description :title})
-                 (assoc :command (str "lsp-clojure-" (:command %)))
-                 (select-keys [:command :title])))
+       (map #(do {:command (str "lsp-clojure-" (:command %))
+                  :title (:description %)}))
        (sort-by :command)))
 
 (println (str/join "\n" (map :command commands-for-package)))

@@ -24,7 +24,9 @@ async function getInput(
 ): Promise<string | undefined> {
 	if (!title) return;
 	const result = await window.requestInput(title, defaultTitle);
-	return result.trim();
+	if (result) {
+		return result.trim();
+	}
 }
 
 async function fetchDocs(client: LanguageClient) {
@@ -57,7 +59,7 @@ async function getUriAndPosition(): Promise<CommandParams> {
 interface Command {
 	command: string;
 	shortcut?: string;
-	title?: string;
+	prompt?: string;
 	choices?: string[];
 	fn?: (client: LanguageClient, context: ExtensionContext) => Promise<any>;
 	aliases?: string[];
@@ -148,8 +150,8 @@ async function executeChoicesCommand(
 	client: LanguageClient,
 	cmd: Command,
 ): Promise<any> {
-	const { title, choices } = cmd;
-	const choice = await titleWithChoices(title, choices);
+	const { prompt, choices } = cmd;
+	const choice = await titleWithChoices(prompt, choices);
 	const extraParams = [];
 	if (choice) extraParams.push(choice);
 	return executePositionCommand(client, cmd, extraParams);
@@ -159,8 +161,8 @@ async function executePromptCommand(
 	client: LanguageClient,
 	cmd: Command,
 ): Promise<any> {
-	const { title } = cmd;
-	const extraParam = await getInput(title);
+	const { prompt } = cmd;
+	const extraParam = await getInput(prompt);
 	if (extraParam) {
 		return executePositionCommand(client, cmd, [extraParam]);
 	}
@@ -171,7 +173,7 @@ function registerCommand(
 	client: LanguageClient,
 	cmd: Command,
 ): void {
-	const { command, fn, title, choices, aliases } = cmd;
+	const { command, fn, prompt, choices, aliases } = cmd;
 	const id = `lsp-clojure-${command}`;
 	const func = async () => {
 		if (choices && !workspace.env.dialog) {
@@ -183,7 +185,7 @@ function registerCommand(
 		} else if (choices) {
 			logger.debug(`Executing 'choices' command ${id}`);
 			await executeChoicesCommand(client, cmd);
-		} else if (title) {
+		} else if (prompt) {
 			logger.debug(`Executing 'prompt' command ${id}`);
 			await executePromptCommand(client, cmd);
 		} else {
